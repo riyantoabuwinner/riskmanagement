@@ -432,6 +432,19 @@
             <div class="nav-logo-text">Risk<span>Management</span></div>
         </a>
         <div class="nav-links">
+            <div class="custom-dropdown" id="aboutDropdown">
+                <a href="javascript:void(0);" class="nav-link-item" onclick="toggleDropdown('aboutMenu')">
+                    Tentang Kami <i class="fas fa-chevron-down ml-1" style="font-size:0.7rem; opacity:0.7;"></i>
+                </a>
+                <div class="custom-dropdown-menu" id="aboutMenu" style="left:0; right:auto;">
+                    <a href="#about-app" class="custom-dropdown-item">
+                        <i class="fas fa-info-circle mr-2" style="color:var(--g4);"></i> Tentang App
+                    </a>
+                    <a href="#workflow" class="custom-dropdown-item">
+                        <i class="fas fa-project-diagram mr-2" style="color:var(--g4);"></i> Alur Kerja
+                    </a>
+                </div>
+            </div>
             <a href="#features" class="nav-link-item">Fitur</a>
             <a href="#process" class="nav-link-item">Proses</a>
             <a href="#roles" class="nav-link-item">Peran</a>
@@ -590,43 +603,104 @@
         </div>
     </section>
 
-    <!-- ── Features ── -->
-    <section class="section" id="features">
+    </section>
+    
+    <!-- ── Detailed About Section ── -->
+    <section class="section" id="about-app" style="background:#f9fafb;">
         <div class="section-center fade-up">
-            <div class="section-badge">FITUR UNGGULAN</div>
-            <h2 class="section-title">Semua yang Anda Butuhkan untuk Manajemen Risiko</h2>
-            <p class="section-desc">Platform komprehensif yang dirancang khusus untuk kebutuhan institusi pendidikan tinggi dengan standar ERM internasional.</p>
+            <div class="section-badge">TENTANG APLIKASI</div>
+            <h2 class="section-title">Solusi Strategis untuk Pengendalian Risiko</h2>
+            <p class="section-desc">RiskManagement App dirancang sebagai platform pusat kendali risiko untuk memastikan keberlanjutan dan akuntabilitas institusi.</p>
         </div>
-        <div class="features-grid">
-            <div class="feature-card fade-up">
-                <div class="feature-icon"><i class="fas fa-th"></i></div>
-                <div class="feature-title">Risk Heatmap 5×5</div>
-                <div class="feature-desc">Visualisasi matriks risiko interaktif berdasarkan likelihood dan impact. Identifikasi risiko kritis secara sekilas dengan kode warna intuitif.</div>
+        <div class="container" style="max-width:1100px; margin:0 auto;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; align-items:center;">
+                <div class="fade-up">
+                    <h3 style="font-size:1.5rem; font-weight:800; color:var(--g1); margin-bottom:20px;">Identitas & Tujuan</h3>
+                    <p style="color:#4b5563; line-height:1.7; margin-bottom:20px;">
+                        <strong>RiskManagement UINSSC</strong> adalah sistem informasi manajemen risiko yang diintegrasikan ke dalam proses bisnis universitas untuk mengidentifikasi potensi hambatan dalam pencapaian tujuan strategis.
+                    </p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div style="background:#fff; padding:20px; border-radius:12px; border:1px solid #e5e7eb;">
+                            <div style="color:var(--g4); font-weight:700; margin-bottom:8px;"><i class="fas fa-bullseye mr-2"></i> Fungsi</div>
+                            <small style="color:#6b7280;">Mengautomasi pemantauan risiko dan menyederhanakan pelaporan mitigasi secara berjenjang.</small>
+                        </div>
+                        <div style="background:#fff; padding:20px; border-radius:12px; border:1px solid #e5e7eb;">
+                            <div style="color:var(--g4); font-weight:700; margin-bottom:8px;"><i class="fas fa-rocket mr-2"></i> Manfaat</div>
+                            <small style="color:#6b7280;">Meningkatkan transparansi, mempercepat pengambilan keputusan, dan melindungi aset negara.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="fade-up" style="background:linear-gradient(135deg, var(--g1), var(--g3)); padding:40px; border-radius:24px; color:#fff; position:relative; overflow:hidden;">
+                    <i class="fas fa-gavel" style="position:absolute; top:-20px; right:-20px; font-size:12rem; opacity:0.05;"></i>
+                    <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;"><i class="fas fa-balance-scale mr-2 text-accent"></i> Regulasi & Standar</h3>
+                    <ul style="list-style:none; padding:0;">
+                        <li style="margin-bottom:12px; display:flex; gap:12px;">
+                            <i class="fas fa-check-circle text-accent" style="margin-top:4px;"></i>
+                            <span><strong>ISO 31000:2018</strong> — Standar Internasional Manajemen Risiko.</span>
+                        </li>
+                        <li style="margin-bottom:12px; display:flex; gap:12px;">
+                            <i class="fas fa-check-circle text-accent" style="margin-top:4px;"></i>
+                            <span><strong>PP No. 60 Tahun 2008</strong> — Sistem Pengendalian Intern Pemerintah (SPIP).</span>
+                        </li>
+                        <li style="display:flex; gap:12px;">
+                            <i class="fas fa-check-circle text-accent" style="margin-top:4px;"></i>
+                            <span><strong>PMK No. 191/PMK.09/2008</strong> — Manajemen Risiko di Lingkungan Kementerian Keuangan/BLU.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                <div class="feature-title">Mitigasi Terstruktur</div>
-                <div class="feature-desc">Kelola rencana mitigasi dengan timeline, penanggung jawab, dan tracking progress. Pantau efektivitas mitigasi secara real-time.</div>
-            </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="feature-title">Dashboard BLU</div>
-                <div class="feature-desc">Dashboard khusus untuk monitoring risiko keuangan BLU dengan indikator IKU, target kinerja, dan peringatan dini otomatis.</div>
-            </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon"><i class="fas fa-users-cog"></i></div>
-                <div class="feature-title">Multi-Role RBAC</div>
-                <div class="feature-desc">Sistem kontrol akses berbasis peran: Super Admin, Risk Manager, Risk Officer, dan Risk Owner dengan hak akses yang terdiferensiasi.</div>
-            </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon"><i class="fas fa-bell"></i></div>
-                <div class="feature-title">Early Warning System</div>
-                <div class="feature-desc">Notifikasi otomatis untuk risiko yang meningkat, deadline mitigasi yang mendekat, dan perubahan status risiko signifikan.</div>
-            </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                <div class="feature-title">Laporan & Audit Trail</div>
-                <div class="feature-desc">Generate laporan risiko komprehensif untuk manajemen dan regulator. Audit trail lengkap untuk setiap perubahan data risiko.</div>
+        </div>
+    </section>
+
+    <!-- ── Detailed Workflow Section ── -->
+    <section class="section" id="workflow">
+        <div class="section-center fade-up">
+            <div class="section-badge">ALUR KERJA ROLE</div>
+            <h2 class="section-title">Bagaimana Kami Bekerja Bersama?</h2>
+            <p class="section-desc">Setiap peran memiliki kontribusi krusial dalam rantai manajemen risiko untuk memastikan ekosistem yang aman.</p>
+        </div>
+        <div class="container" style="max-width:1100px; margin:0 auto;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px;">
+                <!-- Workflow Card 1 -->
+                <div class="feature-card fade-up" style="border-top:4px solid var(--gold);">
+                    <div class="feature-title"><i class="fas fa-user-edit mr-2 text-warning"></i> Risk Owner</div>
+                    <p style="font-size:0.75rem; color:#6b7280; margin-bottom:15px;">Input data primer risiko dari unit kerja masing-masing.</p>
+                    <div style="font-size:0.8rem; border-left:2px solid #fde68a; padding-left:12px;">
+                        <div style="margin-bottom:8px;">1. Identifikasi Risiko Baru</div>
+                        <div style="margin-bottom:8px;">2. Update Progress Mitigasi</div>
+                        <div>3. Lihat Laporan Unit</div>
+                    </div>
+                </div>
+                <!-- Workflow Card 2 -->
+                <div class="feature-card fade-up" style="border-top:4px solid var(--g4);">
+                    <div class="feature-title"><i class="fas fa-microscope mr-2 text-success"></i> Risk Officer</div>
+                    <p style="font-size:0.75rem; color:#6b7280; margin-bottom:15px;">Melakukan verifikasi teknis dan analisis mendalam.</p>
+                    <div style="font-size:0.8rem; border-left:2px solid #a7f3d0; padding-left:12px;">
+                        <div style="margin-bottom:8px;">1. Analisis Likelihood & Impact</div>
+                        <div style="margin-bottom:8px;">2. Verifikasi Rencana Mitigasi</div>
+                        <div>3. Evaluasi Keefektifan Kontrol</div>
+                    </div>
+                </div>
+                <!-- Workflow Card 3 -->
+                <div class="feature-card fade-up" style="border-top:4px solid var(--g2);">
+                    <div class="feature-title"><i class="fas fa-user-shield mr-2 text-primary"></i> Risk Manager</div>
+                    <p style="font-size:0.75rem; color:#6b7280; margin-bottom:15px;">Validasi akhir dan pelaporan ke pimpinan universitas.</p>
+                    <div style="font-size:0.8rem; border-left:2px solid #6ee7b7; padding-left:12px;">
+                        <div style="margin-bottom:8px;">1. Approval Analisis Risiko</div>
+                        <div style="margin-bottom:8px;">2. Penetapan Prioritas Mitigasi</div>
+                        <div>3. Generate Laporan Eksekutif</div>
+                    </div>
+                </div>
+                <!-- Workflow Card 4 -->
+                <div class="feature-card fade-up" style="border-top:4px solid #1e293b;">
+                    <div class="feature-title"><i class="fas fa-tools mr-2 text-dark"></i> Super Admin</div>
+                    <p style="font-size:0.75rem; color:#6b7280; margin-bottom:15px;">Penjaga stabilitas infrastruktur dan data sistem.</p>
+                    <div style="font-size:0.8rem; border-left:2px solid #cbd5e1; padding-left:12px;">
+                        <div style="margin-bottom:8px;">1. Manajemen User & Hak Akses</div>
+                        <div style="margin-bottom:8px;">2. Konfigurasi Master Data</div>
+                        <div>3. Backup & Audit Keamanan</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -750,7 +824,7 @@
     <!-- ── Footer ── -->
     <footer>
         <div class="footer-logo">Risk<span>Management</span></div>
-        <p>Sistem Manajemen Risiko — UIN Siber Syekh Nurjati Cirebon</p>
+        <p>Sistem Manajemen Risiko — PUSTIKOM UIN Siber Syekh Nurjati Cirebon</p>
         <p style="margin-top:8px;">&copy; {{ date('Y') }} · Berbasis <a href="#">ISO 31000:2018</a> · ERM Framework</p>
     </footer>
 
@@ -874,5 +948,6 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    @include('partials.accessibility')
 </body>
 </html>

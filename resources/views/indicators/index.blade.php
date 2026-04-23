@@ -44,6 +44,7 @@
                                         <tr>
                                             <th style="width: 15%">KODE</th>
                                             <th>NAMA INDIKATOR</th>
+                                            <th class="text-center" style="width: 120px">JUMLAH RISIKO</th>
                                             <th style="width: 150px" class="text-center">AKSI</th>
                                         </tr>
                                     </thead>
@@ -53,6 +54,11 @@
                                             <tr>
                                                 <td class="font-weight-bold">{{ $indicator->code }}</td>
                                                 <td class="font-weight-bold">{{ $indicator->name }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge badge-pill {{ $indicator->risks_count > 0 ? 'badge-success' : 'badge-light' }} shadow-sm" style="font-size: 0.8rem; padding: 4px 10px;">
+                                                        {{ $indicator->risks_count }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-sm btn-outline-primary mr-1 btn-edit" 
@@ -85,6 +91,11 @@
                                                 <td style="padding-left: 2.5rem;"><i class="fas fa-level-up-alt fa-rotate-90 mr-2 text-muted"></i> {{ $child->code }}</td>
                                                 <td style="padding-left: 1rem;">{{ $child->name }}</td>
                                                 <td class="text-center">
+                                                    <span class="badge badge-pill {{ $child->risks_count > 0 ? 'badge-info' : 'badge-light' }} border shadow-xs" style="font-size: 0.75rem; padding: 3px 8px; font-weight: 500;">
+                                                        {{ $child->risks_count }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-sm text-primary mr-2 btn-edit"
                                                             data-id="{{ $child->id }}" 
@@ -108,7 +119,7 @@
                                             @endforeach
                                         @empty
                                         <tr>
-                                            <td colspan="3" class="text-center py-4 text-muted small">Belum ada data indikator untuk kategori ini.</td>
+                                            <td colspan="4" class="text-center py-4 text-muted small">Belum ada data indikator untuk kategori ini.</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

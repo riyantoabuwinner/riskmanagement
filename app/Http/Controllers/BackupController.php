@@ -12,7 +12,10 @@ class BackupController extends Controller
 {
     public function index()
     {
-        $setting = BackupSetting::first();
+        $setting = BackupSetting::firstOrCreate([], [
+            'frequency' => 'daily',
+            'is_active' => true,
+        ]);
         $logs = BackupLog::latest()->take(20)->get();
         $backupFiles = glob(storage_path('app/backups/*.zip'));
 
@@ -40,7 +43,11 @@ class BackupController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $setting = BackupSetting::first();
+        $setting = BackupSetting::firstOrCreate([], [
+            'frequency' => 'daily',
+            'is_active' => true,
+        ]);
+        
         $setting->update([
             'frequency' => $request->frequency,
             'is_active' => $request->has('is_active'),

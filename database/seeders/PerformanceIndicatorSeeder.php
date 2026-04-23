@@ -104,5 +104,18 @@ class PerformanceIndicatorSeeder extends Seeder
         foreach ($sdgs as $item) {
             \App\Models\PerformanceIndicator::updateOrCreate(['code' => $item['code']], $item);
         }
+
+        // ── IKU SPESIFIK UNIT (TIK & Tata Kelola) ──
+        $unitIku = [
+            ['code' => 'IKU-TIK-1', 'name' => 'Persentase ketersediaan layanan sistem informasi utama (SIAKAD, LMS, WEB)', 'type' => 'IKU UNIT'],
+            ['code' => 'IKU-TIK-2', 'name' => 'Indeks Kematangan Keamanan Siber (CSIRT)', 'type' => 'IKU UNIT'],
+            ['code' => 'IKU-TIK-3', 'name' => 'Indeks Kepuasan Pengguna terhadap Layanan TI', 'type' => 'IKU UNIT'],
+            ['code' => 'IKU-GOV-1', 'name' => 'Indeks Sistem Pemerintahan Berbasis Elektronik (SPBE)', 'type' => 'IKU UNIT'],
+            ['code' => 'IKU-GOV-2', 'name' => 'Nilai Reformasi Birokrasi (RB) Unit', 'type' => 'IKU UNIT'],
+        ];
+
+        foreach ($unitIku as $item) {
+            \App\Models\PerformanceIndicator::updateOrCreate(['code' => $item['code']], $item);
+        }
     }
 }

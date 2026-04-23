@@ -26,5 +26,6 @@
                 {{ $slot }}
             </div>
         </div>
+        @include('partials.accessibility')
     </body>
 </html>

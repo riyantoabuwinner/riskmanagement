@@ -333,6 +333,10 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" id="appBody">
 <div class="wrapper">
+    <!-- Global Logout Form -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
 
     <!-- ── Navbar ── -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -345,12 +349,7 @@
         </ul>
 
         <ul class="navbar-nav ml-auto align-items-center">
-            <!-- Download Panduan Button -->
-            <li class="nav-item">
-                <a href="{{ route('panduan.download') }}" class="navbar-icon-btn" title="Unduh Panduan" target="_blank" style="text-decoration: none;">
-                    <i class="fas fa-book" style="font-size:0.85rem;"></i>
-                </a>
-            </li>
+
             <!-- Language Dropdown -->
             <li class="nav-item dropdown">
                 <button class="navbar-icon-btn" data-toggle="dropdown" title="Pilih Bahasa" id="langBtn" style="width: auto; padding: 0 10px; gap: 6px;">
@@ -437,7 +436,7 @@
                     <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--green-main),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem;margin-right:8px;">
                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                     </div>
-                    <span style="font-weight:600;color:#374151;font-size:0.9rem;">{{ Auth::user()->name }}</span>
+                    <span class="d-none d-sm-inline" style="font-weight:600;color:#374151;font-size:0.9rem;">{{ Auth::user()->name }}</span>
                     <i class="fas fa-chevron-down ml-2" style="font-size:0.7rem;color:#9ca3af;"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" style="border-radius:12px;border:none;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;padding:8px;">
@@ -451,6 +450,9 @@
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('profile.edit') }}" class="dropdown-item" style="border-radius:8px;padding:8px 12px;">
                         <i class="fas fa-user-circle mr-2" style="color:var(--green-main);"></i> Profil Saya
+                    </a>
+                    <a href="{{ route('panduan.index') }}" class="dropdown-item" style="border-radius:8px;padding:8px 12px;">
+                        <i class="fas fa-book mr-2" style="color:var(--green-main);"></i> Panduan User
                     </a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
@@ -500,13 +502,18 @@
                 </div>
                 <div class="info">
                     <a href="{{ route('profile.edit') }}" class="d-block">{{ Auth::user()->name }}</a>
-                    <small>
-                        @if(Auth::user()->roles->isNotEmpty())
-                            {{ Auth::user()->roles->first()->name }}
-                        @else
-                            User
-                        @endif
-                    </small>
+                    <div class="d-flex align-items-center justify-content-between mt-1">
+                        <small>
+                            @if(Auth::user()->roles->isNotEmpty())
+                                {{ Auth::user()->roles->first()->name }}
+                            @else
+                                User
+                            @endif
+                        </small>
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-danger ml-2" title="Keluar">
+                            <i class="fas fa-power-off fa-xs"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -640,15 +647,20 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                            @csrf
-                        </form>
-                        <a href="#" class="nav-link" onclick="document.getElementById('logout-form').submit();">
+                        <a href="{{ route('panduan.index') }}" class="nav-link {{ request()->routeIs('panduan.index') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-book"></i>
+                            <p>Panduan User</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-danger" onclick="document.getElementById('logout-form').submit();">
                             <i class="nav-icon fas fa-sign-out-alt"></i>
                             <p>Keluar</p>
                         </a>
                     </li>
 
+                    {{-- Extra space at bottom to prevent clipping on mobile --}}
+                    <li class="nav-item pb-5"></li>
                 </ul>
             </nav>
         </div>
@@ -721,7 +733,7 @@
 
     <!-- ── Footer ── -->
     <footer class="main-footer">
-        <strong>&copy; {{ date('Y') }} <span style="color:var(--green-main);">RiskManagement</span> — UIN Siber Syekh Nurjati Cirebon.</strong>
+        <strong>&copy; {{ date('Y') }} <span style="color:var(--green-main);">RiskManagement</span> — PUSTIKOM UIN Siber Syekh Nurjati Cirebon.</strong>
         <div class="float-right d-none d-sm-inline-block">
             <b>Version</b> 1.0.0
         </div>
@@ -740,6 +752,9 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 @stack('scripts')
+
+<!-- Accessibility Widget -->
+@include('partials.accessibility')
 
 <script>
     $(document).ready(function() {

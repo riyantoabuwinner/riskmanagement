@@ -26,4 +26,9 @@ class PerformanceIndicator extends Model
     {
         return $this->hasMany(PerformanceIndicator::class, 'parent_id');
     }
+
+    public function risks()
+    {
+        return $this->hasMany(Risk::class);
+    }
 }

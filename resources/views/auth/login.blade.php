@@ -683,5 +683,8 @@
             }
         }
     </script>
+
+    <!-- Accessibility Widget -->
+    @include('partials.accessibility')
 </body>
 </html>

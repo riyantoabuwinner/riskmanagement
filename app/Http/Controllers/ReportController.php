@@ -81,8 +81,33 @@ class ReportController extends Controller
 
         $risks = $query->latest()->get();
 
+        // Calculate Inherent Matrix
+        $inherentMatrix = [];
+        for ($p = 5; $p >= 1; $p--) {
+            for ($d = 1; $d <= 5; $d++) { $inherentMatrix[$p][$d] = 0; }
+        }
+        foreach ($risks as $r) {
+            if ($r->probabilitas && $r->level_dampak) {
+                $inherentMatrix[$r->probabilitas][$r->level_dampak]++;
+            }
+        }
+
+        // Calculate Residual Matrix
+        $residualMatrix = [];
+        for ($p = 5; $p >= 1; $p--) {
+            for ($d = 1; $d <= 5; $d++) { $residualMatrix[$p][$d] = 0; }
+        }
+        foreach ($risks as $r) {
+            $latest = $r->monitorings->sortByDesc('tanggal_update')->first();
+            if ($latest && $latest->residual_probabilitas && $latest->residual_impact) {
+                $residualMatrix[$latest->residual_probabilitas][$latest->residual_impact]++;
+            }
+        }
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.risks_pdf', [
             'risks' => $risks,
+            'inherentMatrix' => $inherentMatrix,
+            'residualMatrix' => $residualMatrix,
             'title' => 'Risk Register - UIN Syekh Nurjati Cirebon',
             'date' => now()->format('d F Y'),
             'filters' => $request->only(['start_date', 'end_date', 'status'])

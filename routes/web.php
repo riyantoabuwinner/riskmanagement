@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 // ── Role Request (untuk user yang belum punya role) ──
 Route::get('/panduan/download', [\App\Http\Controllers\PanduanController::class , 'download'])->name('panduan.download');
+Route::get('/panduan-user', [\App\Http\Controllers\PanduanController::class , 'index'])->name('panduan.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/role-request', [\App\Http\Controllers\RoleRequestController::class , 'create'])->name('role-request.create');
@@ -29,12 +30,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('mitigations', \App\Http\Controllers\MitigationController::class)->only(['store', 'update', 'destroy', 'edit']);
 
     // Modul Unit Kerja
+    Route::post('/units/import', [UnitController::class, 'import'])->name('units.import');
+    Route::get('/units/template', [UnitController::class, 'downloadTemplate'])->name('units.template');
+    Route::post('/units/bulk-delete', [UnitController::class, 'bulkDelete'])->name('units.bulk-delete');
     Route::resource('units', UnitController::class);
 
     // Modul Kategori Risiko
+    Route::post('/risk-categories/import', [\App\Http\Controllers\RiskCategoryController::class, 'import'])->name('risk-categories.import');
+    Route::get('/risk-categories/template', [\App\Http\Controllers\RiskCategoryController::class, 'downloadTemplate'])->name('risk-categories.template');
+    Route::post('/risk-categories/bulk-delete', [\App\Http\Controllers\RiskCategoryController::class, 'bulkDelete'])->name('risk-categories.bulk-delete');
     Route::resource('risk-categories', \App\Http\Controllers\RiskCategoryController::class);
 
     // Modul Jenis Unit
+    Route::post('/unit-types/import', [\App\Http\Controllers\UnitTypeController::class, 'import'])->name('unit-types.import');
+    Route::get('/unit-types/template', [\App\Http\Controllers\UnitTypeController::class, 'downloadTemplate'])->name('unit-types.template');
+    Route::post('/unit-types/bulk-delete', [\App\Http\Controllers\UnitTypeController::class, 'bulkDelete'])->name('unit-types.bulk-delete');
     Route::resource('unit-types', \App\Http\Controllers\UnitTypeController::class);
 
     // Performance Indicators
@@ -53,6 +63,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/blu-dashboard', [\App\Http\Controllers\BluDashboardController::class , 'index'])->name('blu.dashboard');
 
     // User Management
+    Route::post('/users/import', [\App\Http\Controllers\UserController::class, 'import'])->name('users.import');
+    Route::get('/users/template', [\App\Http\Controllers\UserController::class, 'downloadTemplate'])->name('users.template');
+    Route::post('/users/bulk-delete', [\App\Http\Controllers\UserController::class, 'bulkDelete'])->name('users.bulk-delete');
     Route::resource('users', \App\Http\Controllers\UserController::class);
 
     // Impersonation

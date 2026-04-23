@@ -529,5 +529,8 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
         });
     </script>
+
+    <!-- Accessibility Widget -->
+    @include('partials.accessibility')
 </body>
 </html>

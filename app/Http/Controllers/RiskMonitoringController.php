@@ -33,7 +33,23 @@ class RiskMonitoringController extends Controller
 
         $risks = $query->latest()->paginate(15);
 
-        return view('monitorings.index', compact('risks'));
+        // Calculate Residual Matrix (5x5)
+        $residualMatrix = [];
+        for ($p = 5; $p >= 1; $p--) {
+            for ($d = 1; $d <= 5; $d++) {
+                $residualMatrix[$p][$d] = 0;
+            }
+        }
+
+        $allApproved = Risk::with('monitorings')->where('status', 'Approved')->get();
+        foreach ($allApproved as $risk) {
+            $latest = $risk->monitorings->sortByDesc('tanggal_update')->first();
+            if ($latest && $latest->residual_probabilitas && $latest->residual_impact) {
+                $residualMatrix[$latest->residual_probabilitas][$latest->residual_impact]++;
+            }
+        }
+
+        return view('monitorings.index', compact('risks', 'residualMatrix'));
     }
 
     /**

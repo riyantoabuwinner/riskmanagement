@@ -32,8 +32,7 @@
 
         .kop-text {
             text-align: center;
-            margin-left: 90px;
-            margin-right: 90px;
+            padding-top: 5px;
         }
 
         .kop-text h1 {
@@ -148,6 +147,52 @@
         .font-bold {
             font-weight: bold;
         }
+
+        /* Matrix Styles for PDF */
+        .matrix-table {
+            border-collapse: separate;
+            border-spacing: 1px;
+            margin: 0 auto;
+        }
+
+        .matrix-table td {
+            width: 22px;
+            height: 22px;
+            text-align: center;
+            font-size: 7px;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .matrix-label {
+            font-size: 6px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .matrix-outer-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .matrix-box {
+            text-align: center;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+
+        .count-badge {
+            background: #000;
+            color: #fff;
+            width: 12px;
+            height: 12px;
+            line-height: 12px;
+            display: inline-block;
+            border-radius: 50%;
+            font-size: 7px;
+        }
     </style>
 </head>
 
@@ -157,6 +202,7 @@
         <div class="kop-text">
             <h1>KEMENTERIAN AGAMA REPUBLIK INDONESIA</h1>
             <h2>UIN SIBER SYEKH NURJATI CIREBON</h2>
+            <h2 style="font-size: 12px; margin-top: -2px;">SATUAN TUGAS (SATGAS) MANAJEMEN RISIKO</h2>
             <p>Jl. Perjuangan, Sunyaragi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45131</p>
             <p>Telepon: (0231) 481264 | Website: www.syekhnurjati.ac.id</p>
         </div>
@@ -169,6 +215,80 @@
         <p>PERIODE: {{ $filters['start_date'] ? date('d/m/Y', strtotime($filters['start_date'])) : '-' }} s/d
             {{ $filters['end_date'] ? date('d/m/Y', strtotime($filters['end_date'])) : '-' }}</p>
     </div>
+
+    <!-- Heatmaps Container -->
+    <table class="matrix-outer-container">
+        <tr>
+            <td width="48%" style="border:none; padding-right: 2%;">
+                <div class="matrix-box">
+                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 9px; color: #1f2937;">PETA RISIKO INHERENT (AWAL)</div>
+                    <table class="matrix-table">
+                        @for($p = 5; $p >= 1; $p--)
+                            <tr>
+                                <td class="matrix-label" style="border:none; width: 10px;">{{ $p }}</td>
+                                @for($d = 1; $d <= 5; $d++)
+                                    @php
+                                        $score = $p * $d;
+                                        $color = ($score >= 16) ? '#ef4444' : (($score >= 11) ? '#f97316' : (($score >= 6) ? '#eab308' : '#10b981'));
+                                        $count = $inherentMatrix[$p][$d] ?? 0;
+                                    @endphp
+                                    <td style="background-color: {{ $color }}; color: #fff;">
+                                        @if($count > 0)
+                                            <span class="count-badge">{{ $count }}</span>
+                                        @else
+                                            <span style="opacity: 0.2;">{{ $score }}</span>
+                                        @endif
+                                    </td>
+                                @endfor
+                            </tr>
+                        @endfor
+                        <tr>
+                            <td style="border:none;"></td>
+                            @for($d = 1; $d <= 5; $d++)
+                                <td class="matrix-label" style="border:none;">{{ $d }}</td>
+                            @endfor
+                        </tr>
+                    </table>
+                    <div style="font-size: 6px; margin-top: 5px; color: #999;">(Y: Probabilitas | X: Dampak)</div>
+                </div>
+            </td>
+            <td width="48%" style="border:none; padding-left: 2%;">
+                <div class="matrix-box">
+                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 9px; color: #1f2937;">PETA RISIKO RESIDUAL (SISA)</div>
+                    <table class="matrix-table">
+                        @for($p = 5; $p >= 1; $p--)
+                            <tr>
+                                <td class="matrix-label" style="border:none; width: 10px;">{{ $p }}</td>
+                                @for($d = 1; $d <= 5; $d++)
+                                    @php
+                                        $score = $p * $d;
+                                        $color = ($score >= 16) ? '#ef4444' : (($score >= 11) ? '#f97316' : (($score >= 6) ? '#eab308' : '#10b981'));
+                                        $count = $residualMatrix[$p][$d] ?? 0;
+                                    @endphp
+                                    <td style="background-color: {{ $color }}; color: #fff;">
+                                        @if($count > 0)
+                                            <span class="count-badge">{{ $count }}</span>
+                                        @else
+                                            <span style="opacity: 0.2;">{{ $score }}</span>
+                                        @endif
+                                    </td>
+                                @endfor
+                            </tr>
+                        @endfor
+                        <tr>
+                            <td style="border:none;"></td>
+                            @for($d = 1; $d <= 5; $d++)
+                                <td class="matrix-label" style="border:none;">{{ $d }}</td>
+                            @endfor
+                        </tr>
+                    </table>
+                    <div style="font-size: 6px; margin-top: 5px; color: #999;">(Y: Probabilitas | X: Dampak)</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="page-break-before: auto;"></div>
 
     <table class="data-table">
         <thead>

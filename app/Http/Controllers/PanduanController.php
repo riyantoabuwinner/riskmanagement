@@ -8,6 +8,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class PanduanController extends Controller
 {
     /**
+     * Display the interactive user guide page.
+     */
+    public function index()
+    {
+        return view('panduan.index');
+    }
+
+    /**
      * Download the Panduan Penggunaan PDF.
      */
     public function download()

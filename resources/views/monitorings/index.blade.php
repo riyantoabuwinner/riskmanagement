@@ -2,6 +2,88 @@
     @section('title', 'Monitoring Risiko')
     @section('page-title', 'Monitoring & Realisasi Risiko')
 
+    <div class="row mb-4">
+        <!-- Residual Heatmap -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 h-100" style="border-radius: 12px;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 font-weight-bold" style="color: var(--green-dark);"><i class="fas fa-map-marked-alt mr-2"></i> Residual Risk Map</h5>
+                    <small class="text-muted">Posisi risiko setelah proses mitigasi</small>
+                </div>
+                <div class="card-body">
+                    <div class="matrix-container" style="max-width: 300px; margin: 0 auto;">
+                        <div class="d-flex" style="height: 250px;">
+                            <!-- Y-Axis (Probabilitas) -->
+                            <div class="d-flex flex-column justify-content-between pr-2 text-muted" style="font-size: 0.7rem; font-weight: bold;">
+                                <div>5</div><div>4</div><div>3</div><div>2</div><div>1</div>
+                            </div>
+                            <!-- Matrix Cells -->
+                            <div class="flex-grow-1" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); gap: 2px;">
+                                @for($p = 5; $p >= 1; $p--)
+                                    @for($d = 1; $d <= 5; $d++)
+                                        @php
+                                            $score = $p * $d;
+                                            $color = ($score >= 16) ? '#fecaca' : (($score >= 11) ? '#fed7aa' : (($score >= 6) ? '#fef3c7' : '#d1fae5'));
+                                            $textColor = ($score >= 16) ? '#991b1b' : (($score >= 11) ? '#9a3412' : (($score >= 6) ? '#92400e' : '#065f46'));
+                                            $count = $residualMatrix[$p][$d] ?? 0;
+                                        @endphp
+                                        <div class="d-flex align-items-center justify-content-center" 
+                                             style="background-color: {{ $color }}; border-radius: 3px; font-weight: bold; color: {{ $textColor }}; font-size: 0.8rem; position: relative;">
+                                            @if($count > 0)
+                                                <span class="badge badge-pill badge-dark" style="font-size: 0.65rem; padding: 3px 6px;">{{ $count }}</span>
+                                            @endif
+                                        </div>
+                                    @endfor
+                                @endfor
+                            </div>
+                        </div>
+                        <!-- X-Axis (Impact) -->
+                        <div class="d-flex justify-content-between pl-4 mt-2 text-muted" style="font-size: 0.7rem; font-weight: bold;">
+                            <div style="width: 20%;">1</div><div style="width: 20%; text-align: center;">2</div><div style="width: 20%; text-align: center;">3</div><div style="width: 20%; text-align: center;">4</div><div style="width: 20%; text-align: right;">5</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-center flex-wrap" style="gap: 10px;">
+                        <span class="badge" style="background:#d1fae5; color:#065f46; font-size: 0.65rem;">LOW</span>
+                        <span class="badge" style="background:#fef3c7; color:#92400e; font-size: 0.65rem;">MEDIUM</span>
+                        <span class="badge" style="background:#fed7aa; color:#9a3412; font-size: 0.65rem;">HIGH</span>
+                        <span class="badge" style="background:#fecaca; color:#991b1b; font-size: 0.65rem;">EXTREME</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 h-100" style="border-radius: 12px; background: linear-gradient(135deg, var(--green-dark), #064e3b); color: white;">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <h4 class="font-weight-bold mb-3"><i class="fas fa-chart-line mr-2"></i> Pengelolaan Residu</h4>
+                    <p style="opacity: 0.9; line-height: 1.6;">
+                        <strong>Risiko Residual</strong> adalah tingkat risiko yang masih tersisa setelah kita menerapkan seluruh rencana mitigasi. 
+                        Tujuannya adalah menurunkan posisi risiko dari area merah/oranye ke area kuning/hijau.
+                    </p>
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <div class="p-3 bg-white-10" style="background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <div class="text-xs text-uppercase opacity-70">Inherent Risk</div>
+                                <div class="h5 font-weight-bold mb-0">Sebelum Mitigasi</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-white-10" style="background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <div class="text-xs text-uppercase opacity-70">Residual Risk</div>
+                                <div class="h5 font-weight-bold mb-0">Setelah Mitigasi</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-4 mb-0" style="font-size: 0.85rem; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px;">
+                        <i class="fas fa-info-circle mr-2 text-accent"></i> 
+                        Jika <strong>Residual Risk</strong> masih di level "High" atau "Extreme", maka unit kerja wajib menambahkan rencana mitigasi tambahan hingga risiko mencapai level yang dapat diterima (Acceptable).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">

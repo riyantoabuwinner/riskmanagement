@@ -14,9 +14,12 @@ class PerformanceIndicatorController extends Controller
     {
         $this->authorize('manage master data');
         
-        // Load only top-level indicators, eager load children
+        // Load only top-level indicators, eager load children with risk count
         $indicators = PerformanceIndicator::whereNull('parent_id')
-            ->with('children')
+            ->with(['children' => function($q) {
+                $q->withCount('risks');
+            }])
+            ->withCount('risks')
             ->get()
             ->groupBy('type');
         

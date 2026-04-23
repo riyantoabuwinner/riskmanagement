@@ -9,6 +9,9 @@ use App\Traits\HasAuditLog;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UserImport;
+use App\Exports\UserTemplateExport;
 
 class UserController extends Controller
 {
@@ -95,10 +98,55 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
         $userName = $user->name;
         $user->delete();
 
         $this->log(null, 'Menghapus user: ' . $userName);
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function import(Request $request)
+    {
+        $this->authorize('manage users');
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            Excel::import(new UserImport, $request->file('file'));
+            $this->log(null, 'Melakukan import pengguna dari Excel');
+            return back()->with('success', 'Data pengguna berhasil diimport.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        $this->authorize('manage users');
+        return Excel::download(new UserTemplateExport, 'Format_Import_Pengguna.xlsx');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        if (!auth()->user()->hasRole('Super Admin')) {
+            abort(403, 'Hanya Super Admin yang dapat menghapus pengguna.');
+        }
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return back()->with('error', 'Pilih data yang ingin dihapus terlebih dahulu.');
+        }
+
+        // Prevent self-deletion
+        if (in_array(auth()->id(), $ids)) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $count = count($ids);
+        User::whereIn('id', $ids)->delete();
+        $this->log(null, 'Menghapus masal ' . $count . ' pengguna');
+        
+        return back()->with('success', $count . ' pengguna berhasil dihapus.');
     }
 }

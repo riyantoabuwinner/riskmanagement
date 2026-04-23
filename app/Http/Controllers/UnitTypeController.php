@@ -6,6 +6,9 @@ use App\Models\UnitType;
 use App\Traits\HasAuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UnitTypeImport;
+use App\Exports\UnitTypeTemplateExport;
 
 class UnitTypeController extends Controller
 {
@@ -59,5 +62,49 @@ class UnitTypeController extends Controller
         $this->log(null, 'Menghapus jenis unit: ' . $nama);
 
         return back()->with('success', 'Jenis unit berhasil dihapus.');
+    }
+
+    public function import(Request $request)
+    {
+        $this->authorize('manage master data');
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            Excel::import(new UnitTypeImport, $request->file('file'));
+            $this->log(null, 'Melakukan import jenis unit dari Excel');
+            return back()->with('success', 'Data jenis unit berhasil diimport.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        $this->authorize('manage master data');
+        return Excel::download(new UnitTypeTemplateExport, 'Format_Import_Jenis_Unit.xlsx');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage master data');
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return back()->with('error', 'Pilih data yang ingin dihapus terlebih dahulu.');
+        }
+
+        $count = count($ids);
+        
+        // Check if any of these types are in use
+        $inUse = UnitType::whereIn('id', $ids)->whereHas('units')->count();
+        if ($inUse > 0) {
+            return back()->with('error', $inUse . ' dari data yang dipilih tidak dapat dihapus karena masih digunakan oleh unit kerja.');
+        }
+
+        UnitType::whereIn('id', $ids)->delete();
+        $this->log(null, 'Menghapus masal ' . $count . ' jenis unit');
+        
+        return back()->with('success', $count . ' jenis unit berhasil dihapus.');
     }
 }
