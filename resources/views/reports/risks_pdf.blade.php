@@ -177,20 +177,20 @@
 
     <div class="report-title">
         <h3>LAPORAN EVALUASI & MONITORING MANAJEMEN RISIKO (RISK REGISTER)</h3>
-        <p>UNIT KERJA: {{ count($risks) > 0 && $risks[0]->unit ? strtoupper($risks[0]->unit->nama_unit) : 'SELURUH UNIT KERJA' }}</p>
+        <p>UNIT KERJA: {{ $selectedUnit ? strtoupper($selectedUnit->nama_unit) : 'SELURUH UNIT KERJA' }}</p>
         <p>PERIODE: {{ $filters['start_date'] ? date('d/m/Y', strtotime($filters['start_date'])) : '-' }} s/d {{ $filters['end_date'] ? date('d/m/Y', strtotime($filters['end_date'])) : '-' }}</p>
     </div>
 
-    <!-- Heatmaps Container -->
-    <table width="100%" style="margin-bottom: 15px;">
+    <!-- Heatmaps & Charts Container -->
+    <table width="100%" style="margin-bottom: 10px;">
         <tr>
-            <td width="48%" style="border:none; padding-right: 15px;">
+            <td width="25%" style="border:none; padding-right: 10px;">
                 <div class="matrix-box">
-                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 8px; color: #111;">PETA RISIKO INHERENT (KONDISI AWAL)</div>
+                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 7px; color: #111;">PETA INHERENT</div>
                     <table class="matrix-table">
                         @for($p = 5; $p >= 1; $p--)
                             <tr>
-                                <td class="matrix-label" style="border:none; width: 8px;">{{ $p }}</td>
+                                <td class="matrix-label" style="border:none; width: 6px;">{{ $p }}</td>
                                 @for($d = 1; $d <= 5; $d++)
                                     @php
                                         $score = $p * $d;
@@ -198,7 +198,7 @@
                                         $count = $inherentMatrix[$p][$d] ?? 0;
                                     @endphp
                                     <td style="background-color: {{ $color }}; color: #fff;">
-                                        @if($count > 0) <span class="count-badge">{{ $count }}</span> @else <span style="opacity: 0.1;">{{ $score }}</span> @endif
+                                        @if($count > 0) <span class="count-badge">{{ $count }}</span> @endif
                                     </td>
                                 @endfor
                             </tr>
@@ -207,13 +207,13 @@
                     </table>
                 </div>
             </td>
-            <td width="48%" style="border:none; padding-left: 15px;">
+            <td width="25%" style="border:none; padding-right: 10px;">
                 <div class="matrix-box">
-                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 8px; color: #111;">PETA RISIKO RESIDUAL (SETELAH MITIGASI)</div>
+                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 7px; color: #111;">PETA RESIDUAL</div>
                     <table class="matrix-table">
                         @for($p = 5; $p >= 1; $p--)
                             <tr>
-                                <td class="matrix-label" style="border:none; width: 8px;">{{ $p }}</td>
+                                <td class="matrix-label" style="border:none; width: 6px;">{{ $p }}</td>
                                 @for($d = 1; $d <= 5; $d++)
                                     @php
                                         $score = $p * $d;
@@ -221,7 +221,7 @@
                                         $count = $residualMatrix[$p][$d] ?? 0;
                                     @endphp
                                     <td style="background-color: {{ $color }}; color: #fff;">
-                                        @if($count > 0) <span class="count-badge">{{ $count }}</span> @else <span style="opacity: 0.1;">{{ $score }}</span> @endif
+                                        @if($count > 0) <span class="count-badge">{{ $count }}</span> @endif
                                     </td>
                                 @endfor
                             </tr>
@@ -230,8 +230,44 @@
                     </table>
                 </div>
             </td>
+            <td width="50%" style="border:none;">
+                <div class="matrix-box" style="text-align: left;">
+                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 7px; color: #111; text-align: center;">DISTRIBUSI RISIKO PER KATEGORI</div>
+                    @php $maxCat = $categoryStats->max('risks_count') ?: 1; @endphp
+                    @foreach($categoryStats as $cat)
+                        <div style="margin-bottom: 2px;">
+                            <div style="font-size: 6px; margin-bottom: 1px;">{{ $cat->nama_kategori }} ({{ $cat->risks_count }})</div>
+                            <div style="background-color: #eee; width: 100%; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #3b82f6; width: {{ ($cat->risks_count / $maxCat) * 100 }}%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </td>
         </tr>
     </table>
+
+    <div class="matrix-box" style="margin-bottom: 15px; text-align: left;">
+        <div style="font-weight: bold; margin-bottom: 8px; font-size: 8px; color: #111; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 3px;">DAMPAK RISIKO TERHADAP INDEKS KINERJA (SEGMENTASI)</div>
+        <table width="100%" style="border:none;">
+            <tr>
+                @foreach($indicatorStats as $type => $indicators)
+                <td width="{{ 100 / count($indicatorStats) }}%" style="border:none; padding: 0 5px; vertical-align: top;">
+                    <div style="font-weight: bold; font-size: 7px; color: #444; margin-bottom: 4px; border-left: 2px solid #10b981; padding-left: 5px;">{{ strtoupper($type) }}</div>
+                    @php $maxInd = $indicators->max('risks_count') ?: 1; @endphp
+                    @foreach($indicators as $ind)
+                    <div style="margin-bottom: 3px;">
+                        <div style="font-size: 6px; color: #666; margin-bottom: 1px;">{{ $ind->nama_indikator }} ({{ $ind->risks_count }})</div>
+                        <div style="background-color: #f3f4f6; width: 100%; height: 3px; border-radius: 1.5px;">
+                            <div style="background-color: #10b981; width: {{ ($ind->risks_count / $maxInd) * 100 }}%; height: 100%; border-radius: 1.5px;"></div>
+                        </div>
+                    </div>
+                    @endforeach
+                </td>
+                @endforeach
+            </tr>
+        </table>
+    </div>
 
     <table class="data-table">
         <thead>

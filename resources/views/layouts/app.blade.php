@@ -636,6 +636,14 @@
                             <p>Audit Log</p>
                         </a>
                     </li>
+                    @role('Super Admin')
+                    <li class="nav-item">
+                        <a href="{{ route('system-update.index') }}" class="nav-link {{ request()->routeIs('system-update.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-sync-alt"></i>
+                            <p>Update Sistem</p>
+                        </a>
+                    </li>
+                    @endrole
                     @endcan
                     @endhasanyrole
 

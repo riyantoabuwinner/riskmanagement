@@ -37,6 +37,9 @@
                     <x-nav-link :href="route('audit-logs.index')" :active="request()->routeIs('audit-logs.*')">
                         {{ __('Audit Log') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('system-update.index')" :active="request()->routeIs('system-update.*')">
+                        {{ __('Update Sistem') }}
+                    </x-nav-link>
                     @endrole
                 </div>
             </div>
@@ -184,6 +187,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('audit-logs.index')" :active="request()->routeIs('audit-logs.*')">
                 {{ __('Audit Log') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('system-update.index')" :active="request()->routeIs('system-update.*')">
+                {{ __('Update Sistem') }}
             </x-responsive-nav-link>
             @endrole
         </div>

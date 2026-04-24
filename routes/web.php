@@ -93,6 +93,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/backups/run', [\App\Http\Controllers\BackupController::class , 'run'])->name('backups.run');
             Route::get('/backups/download/{filename}', [\App\Http\Controllers\BackupController::class , 'download'])->name('backups.download');
             Route::delete('/backups/{filename}', [\App\Http\Controllers\BackupController::class , 'destroy'])->name('backups.destroy');
+            // System Update
+            Route::get('/system-update', [\App\Http\Controllers\SystemUpdateController::class, 'index'])->name('system-update.index');
+            Route::post('/system-update/check', [\App\Http\Controllers\SystemUpdateController::class, 'check'])->name('system-update.check');
+            Route::post('/system-update/update', [\App\Http\Controllers\SystemUpdateController::class, 'update'])->name('system-update.update');
         }
         );
     });

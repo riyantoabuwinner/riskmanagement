@@ -96,6 +96,9 @@ class ReportController extends Controller
 
         if ($request->unit_id && $request->unit_id !== 'all') {
             $query->where('unit_id', $request->unit_id);
+            $selectedUnit = Unit::find($request->unit_id);
+        } else {
+            $selectedUnit = null;
         }
 
         if ($request->status) {
@@ -135,10 +138,47 @@ class ReportController extends Controller
             }
         }
 
+        // Generate stats for Category Chart
+        $categoryStats = \App\Models\RiskCategory::withCount(['risks' => function ($q) use ($request) {
+            if ($request->filled('start_date')) {
+                $q->whereDate('tanggal_identifikasi', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $q->whereDate('tanggal_identifikasi', '<=', $request->end_date);
+            }
+            if ($request->filled('unit_id') && $request->unit_id !== 'all') {
+                $q->where('unit_id', $request->unit_id);
+            }
+            if ($request->filled('status')) {
+                $q->where('status', $request->status);
+            }
+        }])->get();
+
+        // Generate stats for Performance Indicators (Segmented)
+        $indicatorStats = \App\Models\PerformanceIndicator::withCount(['risks' => function ($q) use ($request) {
+            if ($request->filled('start_date')) {
+                $q->whereDate('tanggal_identifikasi', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $q->whereDate('tanggal_identifikasi', '<=', $request->end_date);
+            }
+            if ($request->filled('unit_id') && $request->unit_id !== 'all') {
+                $q->where('unit_id', $request->unit_id);
+            }
+            if ($request->filled('status')) {
+                $q->where('status', $request->status);
+            }
+        }])->having('risks_count', '>', 0)
+        ->get()
+        ->groupBy('type');
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.risks_pdf', [
             'risks' => $risks,
+            'selectedUnit' => $selectedUnit,
             'inherentMatrix' => $inherentMatrix,
             'residualMatrix' => $residualMatrix,
+            'categoryStats' => $categoryStats,
+            'indicatorStats' => $indicatorStats,
             'title' => 'Risk Register - UIN Syekh Nurjati Cirebon',
             'date' => now()->format('d F Y'),
             'filters' => $request->only(['start_date', 'end_date', 'status'])
