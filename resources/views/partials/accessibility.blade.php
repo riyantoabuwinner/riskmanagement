@@ -335,49 +335,88 @@
         },
         respond: function(q){
             q = q.toLowerCase();
-            var res = "Maaf, saya belum memiliki informasi spesifik mengenai hal tersebut. Anda bisa bertanya tentang: Cara input risiko, Role pengguna, Matriks risiko, Cara cetak laporan, atau Fitur mitigasi.";
+            var res = "Maaf, saya belum memiliki informasi spesifik mengenai hal tersebut. Anda bisa bertanya tentang: Cara input risiko, Role pengguna, Matriks risiko, Cara cetak laporan, atau Dasar hukum/regulasi.";
             
             // Basic & Identity
             if(q.includes('halo') || q.includes('hi') || q.includes('pagi') || q.includes('siang')) {
                 res = "Halo! Saya asisten RiskGuard AI. Saya siap membantu Anda mengoperasikan sistem manajemen risiko ini. Apa yang ingin Anda ketahui?";
             }
-            else if(q.includes('aplikasi') || q.includes('sistem ini') || q.includes('apa ini')) {
-                res = "Ini adalah Sistem Manajemen Risiko UIN Siber Syekh Nurjati Cirebon. Aplikasi ini membantu institusi mengelola risiko secara digital berdasarkan framework ISO 31000:2018.";
+            else if(q.includes('aplikasi') || q.includes('sistem ini') || q.includes('apa ini') || q.includes('identitas') || q.includes('tujuan')) {
+                res = "RiskManagement UINSSC adalah sistem informasi manajemen risiko yang diintegrasikan ke dalam proses bisnis universitas untuk mengidentifikasi potensi hambatan dalam pencapaian tujuan strategis. Aplikasi ini dirancang sebagai platform pusat kendali risiko untuk memastikan keberlanjutan dan akuntabilitas institusi.";
+            }
+            
+            // Function & Benefits
+            else if(q.includes('fungsi') || q.includes('guna')) {
+                res = "Fungsi utama aplikasi ini adalah mengautomasi pemantauan risiko dan menyederhanakan pelaporan mitigasi secara berjenjang (dari unit ke pimpinan).";
+            }
+            else if(q.includes('manfaat') || q.includes('untung')) {
+                res = "Manfaat utama sistem ini adalah meningkatkan transparansi, mempercepat pengambilan keputusan strategis, dan melindungi aset negara melalui pengelolaan risiko yang proaktif.";
+            }
+
+            // Regulations & Standards
+            else if(q.includes('regulasi') || q.includes('aturan') || q.includes('dasar hukum') || q.includes('standar') || q.includes('pp') || q.includes('pmk')) {
+                res = "Sistem ini dibangun berdasarkan regulasi dan standar berikut:<br>1. **ISO 31000:2018** (Standar Internasional Manajemen Risiko).<br>2. **PP No. 60 Tahun 2008** (Sistem Pengendalian Intern Pemerintah - SPIP).<br>3. **PMK No. 191/PMK.09/2008** (Manajemen Risiko di Lingkungan Kemenkeu/BLU).";
             }
             
             // Roles & Access
-            else if(q.includes('role') || q.includes('peran') || q.includes('siapa yang')) {
-                res = "Sistem memiliki 4 level akses: <br>1. **Super Admin**: Kelola user & sistem.<br>2. **Risk Manager**: Validasi & laporan akhir.<br>3. **Risk Officer**: Analisis & evaluasi teknis.<br>4. **Risk Owner**: Input risiko di unit kerja.";
+            else if(q.includes('role') || q.includes('peran') || q.includes('siapa yang') || q.includes('kerja bersama')) {
+                res = "Setiap pengguna memiliki peran dan tanggung jawab yang jelas:<br><br>" +
+                      "1. **Risk Manager**: Memimpin proses manajemen risiko institusi. (Izin: Akses semua modul, Approve evaluasi, Generate laporan eksekutif).<br>" +
+                      "2. **Risk Officer**: Analisis teknis & koordinasi mitigasi. (Izin: Analisis & evaluasi risiko, Kelola rencana mitigasi, Monitor progress).<br>" +
+                      "3. **Risk Owner**: Pemilik risiko di unit kerja. (Izin: Input risiko unit, Update status mitigasi, Lihat dashboard unit).<br>" +
+                      "4. **Super Admin**: Penjaga stabilitas infrastruktur & master data.";
             }
-            else if(q.includes('password') || q.includes('lupa sandi') || q.includes('ganti password')) {
-                res = "Untuk ganti password, klik nama Anda di pojok kanan atas dashboard, pilih 'Profile', lalu masuk ke bagian 'Update Password'.";
+            else if(q.includes('manager')) {
+                res = "Sebagai **Risk Manager**, Anda adalah pemimpin proses manajemen risiko. Tanggung jawab Anda meliputi approval evaluasi risiko dan penyusunan laporan eksekutif untuk pimpinan universitas.";
+            }
+            else if(q.includes('officer')) {
+                res = "Sebagai **Risk Officer**, Anda bertugas melakukan analisis mendalam terhadap risiko yang masuk, mengelola rencana mitigasi, serta memantau perkembangannya secara teknis.";
+            }
+            else if(q.includes('owner')) {
+                res = "Sebagai **Risk Owner**, Anda adalah garda terdepan di unit kerja. Tugas Anda adalah mengidentifikasi risiko, menginputnya ke sistem, dan memperbarui status mitigasi unit Anda.";
+            }
+            else if(q.includes('izin') || q.includes('akses') || q.includes('hak')) {
+                res = "Hak akses diatur secara ketat sesuai peran. Risk Manager memiliki akses penuh, Officer pada analisis & mitigasi, sementara Owner fokus pada data unit masing-masing.";
+            }
+            // Workflow & ERM Cycle
+            else if(q.includes('alur') || q.includes('cara kerja') || q.includes('siklus') || q.includes('erm')) {
+                res = "Siklus ERM di aplikasi ini mengikuti standar ISO 31000:2018 dengan 4 tahapan utama:<br>" +
+                      "1. **Identifikasi Risiko**: Risk Owner mendaftarkan risiko sesuai konteks unit.<br>" +
+                      "2. **Analisis & Evaluasi**: Risk Officer menentukan nilai Likelihood & Impact pada matriks 5x5.<br>" +
+                      "3. **Rencana Mitigasi**: Tim menyusun rencana aksi dengan target dan penanggung jawab jelas.<br>" +
+                      "4. **Monitoring & Review**: Risk Manager memantau implementasi dan melaporkan ke manajemen.";
+            }
+            else if(q.includes('identifikasi')) {
+                res = "Tahap Identifikasi dilakukan oleh **Risk Owner** untuk menjaring semua potensi peristiwa yang dapat menghambat pencapaian tujuan unit kerja.";
+            }
+            else if(q.includes('analisis') || q.includes('evaluasi')) {
+                res = "Tahap Analisis & Evaluasi melibatkan perhitungan besaran risiko oleh **Risk Officer** untuk menentukan level risiko (Low, Medium, High, Extreme).";
+            }
+            else if(q.includes('prosedur') || q.includes('langkah')) {
+                res = "Prosedur standar kami adalah: Identifikasi -> Analisis & Evaluasi -> Mitigasi -> Monitoring & Review. Semua terdokumentasi secara digital di sistem.";
             }
 
-            // Risk Management Process
-            else if(q.includes('cara') && (q.includes('input') || q.includes('tambah')) && q.includes('risiko')) {
-                res = "Langkah input risiko:<br>1. Buka menu **Daftar Risiko**.<br>2. Klik tombol **Tambah Risiko**.<br>3. Isi Nama Risiko, Penyebab, dan Dampak.<br>4. Tentukan nilai Probabilitas & Dampak awal.<br>5. Simpan.";
+            // Features & Functionality
+            else if(q.includes('fitur') || q.includes('unggulan') || q.includes('bisa apa')) {
+                res = "Fitur unggulan RiskManagement UINSSC meliputi:<br>" +
+                      "1. **Dashboard & Heatmap 5x5**: Visualisasi risiko real-time standar ISO 31000.<br>" +
+                      "2. **Manajemen Risiko Digital**: Identifikasi & analisis risiko secara digital terstruktur.<br>" +
+                      "3. **Mitigasi & Monitoring**: Rencana aksi mitigasi & pantau progres berkelanjutan.<br>" +
+                      "4. **Pelaporan PDF & Excel**: Generate laporan resmi dengan satu klik.<br>" +
+                      "5. **Audit Log Aktivitas**: Rekam jejak perubahan data (Who, When, What).<br>" +
+                      "6. **Aksesibilitas & AI**: Dukungan fitur disabilitas & asisten cerdas RiskGuard AI.";
             }
-            else if(q.includes('matriks') || q.includes('heatmap') || q.includes('5x5')) {
-                res = "Sistem menggunakan Matriks 5x5. Level risiko dihitung dari **Probabilitas × Dampak**. <br>- 1-5: Low (Hijau)<br>- 6-10: Medium (Kuning)<br>- 11-15: High (Oranye)<br>- 16-25: Extreme (Merah).";
+            else if(q.includes('heatmap') || q.includes('matriks')) {
+                res = "Sistem menggunakan Matriks 5x5 ISO 31000. Heatmap membantu Anda menentukan prioritas penanganan risiko secara instan berdasarkan visualisasi warna (Low sampai Extreme).";
             }
-            else if(q.includes('mitigasi')) {
-                res = "Mitigasi adalah rencana aksi untuk menangani risiko. Setelah input risiko, Risk Owner mengusulkan mitigasi, dan akan dievaluasi oleh Risk Officer untuk memantau efektivitasnya.";
+            else if(q.includes('cetak') || q.includes('pdf') || q.includes('excel')) {
+                res = "Fitur Pelaporan memungkinkan Anda meng-generate laporan risiko, mitigasi, dan monitoring ke format PDF atau Excel secara otomatis untuk keperluan dokumen resmi.";
             }
-            
-            // Monitoring & Reports
-            else if(q.includes('monitoring') || q.includes('pantau')) {
-                res = "Menu Monitoring digunakan untuk mencatat progres real-time dari setiap rencana mitigasi yang sedang berjalan.";
+            else if(q.includes('audit') || q.includes('log') || q.includes('catatan')) {
+                res = "Fitur Audit Log Aktivitas menjamin akuntabilitas dengan merekam jejak setiap perubahan data (Who, When, What) sehingga keamanan data tetap terjaga.";
             }
-            else if(q.includes('laporan') || q.includes('cetak') || q.includes('pdf') || q.includes('excel')) {
-                res = "Anda dapat mencetak laporan melalui menu **Laporan**. Tersedia opsi ekspor ke PDF untuk dokumen resmi atau Excel untuk pengolahan data lebih lanjut.";
-            }
-            
-            // Technical/Admin
-            else if(q.includes('unit') || q.includes('unit kerja')) {
-                res = "Admin dapat mengelola data Unit Kerja dan Jenis Unit melalui menu Manajemen Unit. Data ini penting sebagai referensi saat input risiko.";
-            }
-            else if(q.includes('audit') || q.includes('log')) {
-                res = "Fitur Audit Log mencatat setiap aktivitas user (siapa, kapan, melakukan apa) untuk menjaga keamanan dan transparansi data.";
+            else if(q.includes('aksesibilitas') || q.includes('disabilitas')) {
+                res = "Kami mendukung inklusivitas melalui fitur aksesibilitas terintegrasi (seperti pembaca layar, kontras tinggi) serta bantuan operasional dari asisten cerdas RiskGuard AI.";
             }
             else if(q.includes('terima kasih') || q.includes('thanks')) {
                 res = "Sama-sama! Senang bisa membantu. Ada lagi yang ingin Anda tanyakan?";

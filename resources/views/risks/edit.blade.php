@@ -49,22 +49,18 @@
                             <div class="col-12">
                                 <div class="form-group mb-4">
                                     <label class="font-weight-bold text-dark"><i class="fas fa-bullseye mr-1 text-success"></i> Indikator Kinerja terkait</label>
-                                    <select name="misi_universitas[]" class="form-control select2 @error('misi_universitas') is-invalid @enderror" multiple data-placeholder="-- Pilih Satu atau Lebih Indikator Kinerja --">
+                                    <select name="performance_indicator_ids[]" class="form-control select2 @error('performance_indicator_ids') is-invalid @enderror" multiple data-placeholder="-- Pilih Satu atau Lebih Indikator Kinerja --">
+                                        @php 
+                                            $selectedIds = old('performance_indicator_ids', $risk->performanceIndicators->pluck('id')->toArray());
+                                        @endphp
                                         @foreach($indicators as $type => $group)
                                             <optgroup label="{{ $type }}">
                                                 @foreach($group as $indicator)
-                                                    @php 
-                                                        $val = $indicator->code . ' - ' . $indicator->name; 
-                                                        $currentValues = old('misi_universitas', $risk->misi_universitas ?? []);
-                                                    @endphp
-                                                    <option value="{{ $val }}" {{ is_array($currentValues) && in_array($val, $currentValues) ? 'selected' : '' }}>
+                                                    <option value="{{ $indicator->id }}" {{ in_array($indicator->id, $selectedIds) ? 'selected' : '' }}>
                                                         {{ $indicator->code }} - {{ $indicator->name }}
                                                     </option>
                                                     @foreach($indicator->children as $child)
-                                                        @php 
-                                                            $cval = $child->code . ' - ' . $child->name; 
-                                                        @endphp
-                                                        <option value="{{ $cval }}" {{ is_array($currentValues) && in_array($cval, $currentValues) ? 'selected' : '' }}>
+                                                        <option value="{{ $child->id }}" {{ in_array($child->id, $selectedIds) ? 'selected' : '' }}>
                                                             &nbsp;&nbsp;↳ {{ $child->code }} - {{ $child->name }}
                                                         </option>
                                                     @endforeach
@@ -72,7 +68,7 @@
                                             </optgroup>
                                         @endforeach
                                     </select>
-                                    @error('misi_universitas')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    @error('performance_indicator_ids')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
                         </div>

@@ -5,75 +5,114 @@
         <li class="breadcrumb-item active">User Management</li>
     @endsection
 
-    <form id="bulk-delete-form" action="{{ route('users.bulk-delete') }}" method="POST">
-        @csrf
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-users-cog mr-2" style="color:#047857;"></i>
-                    <h3 class="card-title mb-0">Daftar Pengguna ({{ $users->total() }})</h3>
+    <style>
+        .user-card { border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; }
+        .user-table thead th { 
+            background: #f8fafc; text-transform: uppercase; font-size: 0.7rem; 
+            font-weight: 800; letter-spacing: 1px; color: #64748b; border-top: none;
+            padding: 15px 20px;
+        }
+        .user-table tbody td { padding: 15px 20px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, #059669, #10b981);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(16,185,129,0.2);
+        }
+        .user-name { font-weight: 700; color: #1e293b; font-size: 0.9rem; margin-bottom: 2px; }
+        .user-email { font-size: 0.75rem; color: #64748b; }
+        .btn-action { 
+            width: 32px; height: 32px; border-radius: 8px; display: inline-flex; 
+            align-items: center; justify-content: center; transition: all 0.2s;
+            border: 1px solid #e2e8f0; background: #fff; color: #64748b;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #059669; border-color: #059669; }
+        .btn-action.btn-delete:hover { color: #ef4444; border-color: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.15); }
+        .role-badge { 
+            padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.65rem; 
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+    </style>
+
+    <div class="card user-card">
+        <div class="card-header bg-white py-4 px-4 border-0">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                <div>
+                    <h3 class="font-weight-bold text-dark mb-1" style="font-size:1.25rem;">Daftar Pengguna</h3>
+                    <p class="text-muted mb-0" style="font-size:0.85rem;">Kelola akses dan informasi pengguna sistem ({{ $users->total() }} user)</p>
                 </div>
-                <div class="d-flex" style="gap:8px;">
+                <div class="d-flex mt-3 mt-md-0 align-items-center" style="gap:10px; flex-wrap: wrap;">
+                    <form action="{{ route('users.index') }}" method="GET" class="d-flex" style="gap:5px;">
+                        <div class="position-relative">
+                            <i class="fas fa-search position-absolute" style="left:12px; top:11px; color:#94a3b8; font-size:0.9rem;"></i>
+                            <input type="text" name="search" class="form-control shadow-none pl-5" placeholder="Cari nama, email, unit..." value="{{ request('search') }}" style="border-radius:10px; height:38px; width:220px; border-color:#e2e8f0; font-size:0.85rem;">
+                            @if(request('search'))
+                                <a href="{{ route('users.index') }}" class="position-absolute" style="right:12px; top:8px; color:#ef4444;"><i class="fas fa-times-circle"></i></a>
+                            @endif
+                        </div>
+                    </form>
                     @role('Super Admin')
-                    <button type="button" id="bulk-delete-btn" class="btn btn-danger btn-sm d-none" onclick="confirmBulkDelete()">
-                        <i class="fas fa-trash mr-1"></i> Hapus Terpilih (<span id="selected-count">0</span>)
+                    <button type="button" id="bulk-delete-btn" class="btn btn-outline-danger d-none shadow-sm" style="border-radius:10px; font-weight:600; height:38px;" onclick="confirmBulkDelete()">
+                        <i class="fas fa-trash-alt mr-2"></i> Hapus (<span id="selected-count">0</span>)
                     </button>
                     @endrole
-                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#importExcelModal">
-                        <i class="fas fa-file-import mr-1"></i> Import Excel
+                    <button type="button" class="btn btn-outline-success shadow-sm" style="border-radius:10px; font-weight:600; height:38px;" data-toggle="modal" data-target="#importExcelModal">
+                        <i class="fas fa-file-excel mr-2"></i> Import
                     </button>
-                    <a href="{{ route('users.create') }}" class="btn btn-success btn-sm">
-                        <i class="fas fa-user-plus mr-1"></i> Tambah User
+                    <a href="{{ route('users.create') }}" class="btn btn-success shadow-sm px-4" style="border-radius:10px; font-weight:700; background:linear-gradient(135deg,#059669,#10b981); border:none; height:38px; display:flex; align-items:center;">
+                        <i class="fas fa-plus-circle mr-2"></i> Tambah User
                     </a>
                 </div>
             </div>
+        </div>
+        <form id="bulk-delete-form" action="{{ route('users.bulk-delete') }}" method="POST">
+            @csrf
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table class="table user-table mb-0">
                         <thead>
                             <tr>
                                 @role('Super Admin')
-                                <th style="width: 40px;" class="px-3">
-                                    <div class="custom-control custom-checkbox">
+                                <th style="width: 50px;">
+                                    <div class="custom-control custom-checkbox ml-2">
                                         <input type="checkbox" class="custom-control-input" id="checkAll">
                                         <label class="custom-control-label" for="checkAll"></label>
                                     </div>
                                 </th>
                                 @endrole
-                                <th>#</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Role</th>
+                                <th>Pengguna</th>
+                                <th>Kontak</th>
+                                <th>Otoritas</th>
                                 <th>Unit Kerja</th>
-                                <th>Aksi</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($users as $i => $user)
                             <tr>
                                 @role('Super Admin')
-                                <td class="px-3">
-                                    <div class="custom-control custom-checkbox">
+                                <td>
+                                    <div class="custom-control custom-checkbox ml-2">
                                         <input type="checkbox" name="ids[]" value="{{ $user->id }}" class="custom-control-input row-checkbox" id="check{{ $user->id }}" {{ auth()->id() == $user->id ? 'disabled' : '' }}>
                                         <label class="custom-control-label" for="check{{ $user->id }}"></label>
                                     </div>
                                 </td>
                                 @endrole
-                                <td class="text-muted" style="font-size:0.8rem;">{{ $users->firstItem() + $i }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#047857,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-right:10px;">
+                                        <div class="user-avatar mr-3">
                                             {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <div class="font-weight-bold" style="color:#111827;font-size:0.88rem;">{{ $user->name }}</div>
-                                            @if($user->unit)
-                                            <small class="text-muted"><i class="fas fa-building fa-xs mr-1"></i>{{ $user->unit->nama_unit }}</small>
-                                            @endif
+                                            <div class="user-name">{{ $user->name }}</div>
+                                            <div class="text-muted" style="font-size:0.75rem;">ID: #{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td><small class="text-muted">{{ $user->email }}</small></td>
+                                <td>
+                                    <div class="user-email"><i class="far fa-envelope mr-1"></i> {{ $user->email }}</div>
+                                </td>
                                 <td>
                                     @forelse($user->roles as $role)
                                         @php
@@ -81,39 +120,37 @@
                                                 'Super Admin' => 'danger',
                                                 'Risk Manager' => 'success',
                                                 'Risk Officer' => 'primary',
-                                                'Risk Owner' => 'info',
-                                                'Admin Universitas' => 'warning'
+                                                'Risk Owner' => 'info'
                                             ];
                                             $rc = $roleColors[$role->name] ?? 'secondary';
                                         @endphp
-                                        <span class="badge badge-{{ $rc }}" style="font-size:0.72rem;">{{ $role->name }}</span>
+                                        <span class="role-badge badge-{{ $rc }}">{{ $role->name }}</span>
                                     @empty
-                                        <span class="badge badge-light text-muted">Tidak ada role</span>
+                                        <span class="text-muted small">No Role</span>
                                     @endforelse
                                 </td>
                                 <td>
                                     @if($user->unit)
-                                        <small style="color:#374151;">{{ $user->unit->nama_unit }}</small>
+                                        <div class="font-weight-600 text-dark" style="font-size:0.85rem;">{{ $user->unit->nama_unit }}</div>
+                                        <div class="text-muted" style="font-size:0.7rem;">{{ $user->unit->type->nama_jenis ?? 'Internal' }}</div>
                                     @else
-                                        <span class="text-muted">-</span>
+                                        <span class="text-muted small">Universitas</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="d-flex" style="gap:4px;">
-                                        <a href="{{ route('users.edit', $user) }}" class="btn btn-xs btn-outline-primary" title="Edit">
-                                            <i class="fas fa-edit"></i>
+                                    <div class="d-flex justify-content-center" style="gap:8px;">
+                                        <a href="{{ route('users.edit', $user) }}" class="btn-action" title="Edit Profil">
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         @role('Super Admin')
                                         @if(auth()->id() !== $user->id && !$user->hasRole('Super Admin'))
-                                        <button type="button" class="btn btn-xs btn-outline-warning" title="Impersonate: Login sebagai {{ $user->name }}" onclick="confirmImpersonate('{{ route('users.impersonate', $user) }}', '{{ $user->name }}')">
-                                            <i class="fas fa-user-secret"></i>
+                                        <button type="button" class="btn-action" title="Impersonate" onclick="confirmImpersonate('{{ route('users.impersonate', $user) }}', '{{ $user->name }}')">
+                                            <i class="fas fa-fingerprint"></i>
                                         </button>
                                         @endif
-                                        @endrole
-                                        @role('Super Admin')
                                         @if(auth()->id() !== $user->id)
-                                        <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus" onclick="confirmDelete('{{ route('users.destroy', $user) }}', '{{ $user->name }}')">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="button" class="btn-action btn-delete" title="Hapus Akun" onclick="confirmDelete('{{ route('users.destroy', $user) }}', '{{ $user->name }}')">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                         @endif
                                         @endrole
@@ -122,10 +159,9 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="fas fa-users fa-3x mb-3 d-block"></i>
-                                    Belum ada pengguna.
-                                    <br><a href="{{ route('users.create') }}" class="btn btn-success btn-sm mt-2"><i class="fas fa-user-plus mr-1"></i> Tambah User Pertama</a>
+                                <td colspan="6" class="text-center py-5">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" style="width:80px; opacity:0.3;" class="mb-3">
+                                    <p class="text-muted">Tidak ditemukan data pengguna.</p>
                                 </td>
                             </tr>
                             @endforelse
@@ -134,12 +170,12 @@
                 </div>
             </div>
             @if($users->hasPages())
-            <div class="card-footer">
+            <div class="card-footer bg-white border-0 py-4">
                 {{ $users->links() }}
             </div>
             @endif
-        </div>
-    </form>
+        </form>
+    </div>
 
     <!-- Modal Import Excel -->
     <div class="modal fade" id="importExcelModal" tabindex="-1" role="dialog" aria-hidden="true">

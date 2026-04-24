@@ -76,23 +76,17 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-12 mb-3">
-                            <label class="text-xs text-uppercase text-muted font-weight-bold"><i class="fas fa-bullseye mr-1"></i> Indikator Kinerja terkait</label>
-                            <div class="d-flex flex-wrap">
-                                @if(is_array($risk->misi_universitas))
-                                    @forelse($risk->misi_universitas as $indicator)
-                                        <span class="badge badge-outline-success mr-2 mb-2 p-2 border" style="color: var(--green-dark); font-weight: 500; background: #f0fdf4;">
-                                            {{ $indicator }}
-                                        </span>
-                                    @empty
-                                        <p class="mb-0 text-muted small">Tidak ada indikator terkait.</p>
-                                    @endforelse
-                                @elseif($risk->misi_universitas)
-                                    <span class="badge badge-outline-success mr-2 mb-2 p-2 border" style="color: var(--green-dark); font-weight: 500; background: #f0fdf4;">
-                                        {{ $risk->misi_universitas }}
+                            <label class="text-xs text-uppercase text-muted font-weight-bold"><i class="fas fa-bullseye mr-1 text-success"></i> Indikator Kinerja terkait</label>
+                            <div class="d-flex flex-wrap mt-1">
+                                @forelse($risk->performanceIndicators as $indicator)
+                                    <span class="badge mr-2 mb-2 p-2 border shadow-sm" style="color: var(--green-dark); font-weight: 600; background: #f0fdf4; border-radius: 8px; border-color: #bcf0da !important;">
+                                        <i class="fas fa-check-circle mr-1 text-success"></i> {{ $indicator->code }} - {{ $indicator->name }}
                                     </span>
-                                @else
-                                    <p class="mb-0 text-muted small">-</p>
-                                @endif
+                                @empty
+                                    <p class="mb-0 text-muted small p-2 bg-light rounded w-100 border-left border-warning" style="border-left-width: 4px !important;">
+                                        <i class="fas fa-info-circle mr-1"></i> Belum ada indikator kinerja yang dikaitkan.
+                                    </p>
+                                @endforelse
                             </div>
                         </div>
                         <div class="col-12 mb-3">

@@ -84,6 +84,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // Audit Logs
             Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class , 'index'])->name('audit-logs.index');
+            Route::get('/audit-logs/export-excel', [\App\Http\Controllers\AuditLogController::class , 'exportExcel'])->name('audit-logs.export-excel');
+            Route::get('/audit-logs/export-pdf', [\App\Http\Controllers\AuditLogController::class , 'exportPdf'])->name('audit-logs.export-pdf');
 
             // Backups
             Route::get('/backups', [\App\Http\Controllers\BackupController::class , 'index'])->name('backups.index');

@@ -13,7 +13,6 @@ class Risk extends Model
     protected $fillable = [
         'unit_id',
         'kategori_id',
-        'performance_indicator_id',
         'kode_risiko',
         'nomor_urut',
         'misi_universitas',
@@ -64,9 +63,9 @@ class Risk extends Model
         return $this->hasMany(RiskMonitoring::class);
     }
 
-    public function performanceIndicator()
+    public function performanceIndicators()
     {
-        return $this->belongsTo(PerformanceIndicator::class);
+        return $this->belongsToMany(PerformanceIndicator::class, 'risk_performance_indicator');
     }
 
     public function auditLogs()

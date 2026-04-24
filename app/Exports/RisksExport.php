@@ -28,7 +28,7 @@ class RisksExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             $query->where('unit_id', Auth::user()->unit_id);
         }
 
-        if ($this->request->unit_id) {
+        if ($this->request->unit_id && $this->request->unit_id !== 'all') {
             $query->where('unit_id', $this->request->unit_id);
         }
 

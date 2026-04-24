@@ -19,11 +19,34 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('manage users');
-        $users = User::with('unit')->paginate(10);
-        return view('users.index', compact('users'));
+        $search = $request->input('search');
+        
+        $users = User::with(['unit', 'roles'])
+            ->when($search, function($query, $search) {
+                $terms = explode(' ', $search);
+                return $query->where(function($q) use ($terms) {
+                    foreach ($terms as $term) {
+                        $q->where(function($sub) use ($term) {
+                            $sub->where('name', 'like', "%{$term}%")
+                                ->orWhere('email', 'like', "%{$term}%")
+                                ->orWhereHas('unit', function($u) use ($term) {
+                                    $u->where('nama_unit', 'like', "%{$term}%");
+                                })
+                                ->orWhereHas('roles', function($r) use ($term) {
+                                    $r->where('name', 'like', "%{$term}%");
+                                });
+                        });
+                    }
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('users.index', compact('users', 'search'));
     }
 
     public function create()

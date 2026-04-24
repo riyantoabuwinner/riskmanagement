@@ -29,6 +29,6 @@ class PerformanceIndicator extends Model
 
     public function risks()
     {
-        return $this->hasMany(Risk::class);
+        return $this->belongsToMany(Risk::class, 'risk_performance_indicator');
     }
 }

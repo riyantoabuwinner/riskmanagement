@@ -26,7 +26,7 @@ class ReportController extends Controller
         }
 
         // Apply filters from request
-        if ($request->filled('unit_id')) {
+        if ($request->filled('unit_id') && $request->unit_id !== 'all') {
             $query->where('unit_id', $request->unit_id);
         }
 
@@ -42,13 +42,44 @@ class ReportController extends Controller
             $query->whereDate('tanggal_identifikasi', '<=', $request->end_date);
         }
 
-        // Only fetch if a filter is applied or explicitly requested
-        $risks = null;
-        if ($request->anyFilled(['unit_id', 'status', 'start_date', 'end_date', 'view'])) {
-            $risks = $query->latest()->get();
-        }
+        // Fetch risks and statistics directly to show by default
+        $risks = $query->latest()->get();
+        
+        // Generate stats for Category Chart
+        $categoryStats = \App\Models\RiskCategory::withCount(['risks' => function ($q) use ($request) {
+            if ($request->filled('start_date')) {
+                $q->whereDate('tanggal_identifikasi', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $q->whereDate('tanggal_identifikasi', '<=', $request->end_date);
+            }
+            if ($request->filled('unit_id') && $request->unit_id !== 'all') {
+                $q->where('unit_id', $request->unit_id);
+            }
+            if ($request->filled('status')) {
+                $q->where('status', $request->status);
+            }
+        }])->get();
 
-        return view('reports.index', compact('units', 'risks'));
+        // Generate stats for Performance Indicators (Segmented)
+        $indicatorStats = \App\Models\PerformanceIndicator::withCount(['risks' => function ($q) use ($request) {
+            if ($request->filled('start_date')) {
+                $q->whereDate('tanggal_identifikasi', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $q->whereDate('tanggal_identifikasi', '<=', $request->end_date);
+            }
+            if ($request->filled('unit_id') && $request->unit_id !== 'all') {
+                $q->where('unit_id', $request->unit_id);
+            }
+            if ($request->filled('status')) {
+                $q->where('status', $request->status);
+            }
+        }])->having('risks_count', '>', 0)
+        ->get()
+        ->groupBy('type');
+
+        return view('reports.index', compact('units', 'risks', 'categoryStats', 'indicatorStats'));
     }
 
     /**
@@ -63,7 +94,7 @@ class ReportController extends Controller
             $query->where('unit_id', Auth::user()->unit_id);
         }
 
-        if ($request->unit_id) {
+        if ($request->unit_id && $request->unit_id !== 'all') {
             $query->where('unit_id', $request->unit_id);
         }
 

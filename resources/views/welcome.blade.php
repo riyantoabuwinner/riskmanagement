@@ -601,7 +601,6 @@
                 </div>
             </div>
         </div>
-    </section>
 
     </section>
     
@@ -648,6 +647,53 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Features Section ── -->
+    <section class="section" id="features">
+        <div class="section-center fade-up">
+            <div class="section-badge">FITUR UNGGULAN</div>
+            <h2 class="section-title">Ekosistem Manajemen Risiko Terpadu</h2>
+            <p class="section-desc">Platform kami menyediakan instrumen lengkap untuk membantu institusi mengenali dan menangani setiap potensi risiko secara akurat.</p>
+        </div>
+        <div class="features-grid">
+            <!-- Feature 1 -->
+            <div class="feature-card fade-up">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="feature-title">Dashboard & Heatmap 5x5</div>
+                <p class="feature-desc">Visualisasi data risiko real-time dengan matriks 5x5 ISO 31000 untuk menentukan prioritas penanganan secara instan.</p>
+            </div>
+            <!-- Feature 2 -->
+            <div class="feature-card fade-up">
+                <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+                <div class="feature-title">Manajemen Risiko Digital</div>
+                <p class="feature-desc">Identifikasi, analisis, dan evaluasi risiko secara digital dengan framework yang terstruktur dan terukur.</p>
+            </div>
+            <!-- Feature 3 -->
+            <div class="feature-card fade-up">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="feature-title">Mitigasi & Monitoring</div>
+                <p class="feature-desc">Rencanakan aksi mitigasi dan pantau progres penanganan risiko secara berkelanjutan oleh tim terkait.</p>
+            </div>
+            <!-- Feature 4 -->
+            <div class="feature-card fade-up">
+                <div class="feature-icon"><i class="fas fa-file-invoice"></i></div>
+                <div class="feature-title">Pelaporan PDF & Excel</div>
+                <p class="feature-desc">Generate laporan risiko, mitigasi, dan monitoring ke format dokumen resmi hanya dengan satu klik.</p>
+            </div>
+            <!-- Feature 5 -->
+            <div class="feature-card fade-up">
+                <div class="feature-icon"><i class="fas fa-history"></i></div>
+                <div class="feature-title">Audit Log Aktivitas</div>
+                <p class="feature-desc">Rekam jejak setiap perubahan data (Who, When, What) untuk menjamin akuntabilitas dan keamanan data.</p>
+            </div>
+            <!-- Feature 6 -->
+            <div class="feature-card fade-up">
+                <div class="feature-icon"><i class="fas fa-universal-access"></i></div>
+                <div class="feature-title">Aksesibilitas & AI</div>
+                <p class="feature-desc">Dukungan fitur disabilitas terintegrasi dan asisten cerdas RiskGuard AI untuk bantuan operasional.</p>
             </div>
         </div>
     </section>

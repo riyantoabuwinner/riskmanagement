@@ -10,30 +10,84 @@ class RiskEvaluationController extends Controller
 {
     public function index()
     {
-        // 1. Heatmap Data (Matrix 5x5) using probabilitas & level_dampak
-        $matrixIds = [];
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $isAdmin = $user->hasAnyRole(['Super Admin', 'Admin', 'Risk Manager']);
+
+        // 1. Matrices (storing list of risks for tooltips)
+        $inherentMatrix = [];
+        $residualMatrix = [];
         for ($p = 5; $p >= 1; $p--) {
             for ($d = 1; $d <= 5; $d++) {
-                $matrixIds[$p][$d] = Risk::where('probabilitas', $p)
-                    ->where('level_dampak', $d)
-                    ->count();
+                $inherentMatrix[$p][$d] = collect();
+                $residualMatrix[$p][$d] = collect();
             }
         }
 
-        // 2. Risks Pending Evaluation (Draft or Submitted status)
-        $query = Risk::with(['unit', 'kategori'])
-            ->whereIn('status', ['Draft', 'Submitted']);
+        // 2. Risk Level Distributions
+        $levels = ['Extreme' => 0, 'High' => 0, 'Medium' => 0, 'Low' => 0];
+        $inherentDist = $levels;
+        $residualDist = $levels;
 
-        // Filter by Unit for non-admin
-        if (!\Illuminate\Support\Facades\Auth::user()->hasAnyRole(['Super Admin', 'Admin', 'Risk Manager'])) {
-            $query->where('unit_id', \Illuminate\Support\Facades\Auth::user()->unit_id);
+        // Base Query for Risks
+        $baseQuery = Risk::with(['unit', 'kategori', 'monitorings' => function($q) {
+            $q->orderBy('tanggal_update', 'desc');
+        }]);
+        if (!$isAdmin) { $baseQuery->where('unit_id', $user->unit_id); }
+        $allRisks = $baseQuery->get();
+
+        $trends = ['improved' => 0, 'stable' => 0, 'worsened' => 0];
+        $totalReduction = 0;
+        $monitoredCount = 0;
+
+        foreach ($allRisks as $risk) {
+            // Inherent stats
+            $inherentMatrix[$risk->probabilitas][$risk->level_dampak]->push($risk);
+            $inherentDist[$risk->level_risiko]++;
+
+            $latest = $risk->monitorings->first();
+            if ($latest && $latest->residual_probabilitas && $latest->residual_impact) {
+                $monitoredCount++;
+                $p_res = $latest->residual_probabilitas;
+                $d_res = $latest->residual_impact;
+                $residualMatrix[$p_res][$d_res]->push($risk);
+                
+                $residualScore = $p_res * $d_res;
+                $residualLevel = self::calculateLevel($residualScore);
+                $residualDist[$residualLevel]++;
+
+                $reduction = $risk->skor_risiko - $residualScore;
+                $totalReduction += $reduction;
+
+                if ($reduction > 0) $trends['improved']++;
+                elseif ($reduction < 0) $trends['worsened']++;
+                else $trends['stable']++;
+            } else {
+                // If not monitored, residual = inherent
+                $residualDist[$risk->level_risiko]++;
+                $residualMatrix[$risk->probabilitas][$risk->level_dampak]->push($risk);
+                $trends['stable']++;
+            }
         }
 
-        // Prioritize Submitted risks, then by date
-        $pendingRisks = $query->orderByRaw("FIELD(status, 'Submitted', 'Draft')")
-            ->latest()
+        $avgReduction = $monitoredCount > 0 ? round($totalReduction / $monitoredCount, 1) : 0;
+
+        // 3. Pending Risks (for the table)
+        $pendingRisks = Risk::with(['unit', 'monitorings'])
+            ->when(!$isAdmin, fn($q) => $q->where('unit_id', $user->unit_id))
+            ->orderBy('skor_risiko', 'desc')
             ->paginate(10);
 
-        return view('risk_evaluation.index', compact('matrixIds', 'pendingRisks'));
+        return view('risk_evaluation.index', compact(
+            'inherentMatrix', 'residualMatrix', 'pendingRisks', 'trends', 
+            'inherentDist', 'residualDist', 'avgReduction', 'monitoredCount'
+        ));
+    }
+
+    public static function calculateLevel($score)
+    {
+        if ($score >= 16) return 'Extreme';
+        if ($score >= 12) return 'High';
+        if ($score >= 6) return 'Medium';
+        return 'Low';
     }
 }

@@ -88,6 +88,8 @@ class RiskController extends Controller
             'level_dampak' => 'required|integer|min:1|max:5',
             'pemilik_risiko' => 'nullable|string',
             'tanggal_identifikasi' => 'nullable|date',
+            'performance_indicator_ids' => 'nullable|array',
+            'performance_indicator_ids.*' => 'exists:performance_indicators,id',
         ]);
 
         $validated['skor_risiko'] = $this->riskService->calculateScore($validated['probabilitas'], $validated['level_dampak']);
@@ -101,6 +103,10 @@ class RiskController extends Controller
         }
 
         $risk = Risk::create($validated);
+        
+        if ($request->has('performance_indicator_ids')) {
+            $risk->performanceIndicators()->sync($request->performance_indicator_ids);
+        }
 
         $this->log($risk->id, 'Mengidentifikasi risiko baru sebagai Draft');
 
@@ -110,7 +116,7 @@ class RiskController extends Controller
     public function show(Risk $risk)
     {
         $this->authorize('view', $risk);
-        $risk->load(['unit', 'kategori', 'mitigations', 'monitorings', 'auditLogs.user']);
+        $risk->load(['unit', 'kategori', 'mitigations', 'monitorings', 'auditLogs.user', 'performanceIndicators']);
         return view('risks.show', compact('risk'));
     }
 
@@ -147,6 +153,8 @@ class RiskController extends Controller
             'level_dampak' => 'required|integer|min:1|max:5',
             'pemilik_risiko' => 'nullable|string',
             'tanggal_identifikasi' => 'nullable|date',
+            'performance_indicator_ids' => 'nullable|array',
+            'performance_indicator_ids.*' => 'exists:performance_indicators,id',
         ]);
 
         $validated['skor_risiko'] = $this->riskService->calculateScore($validated['probabilitas'], $validated['level_dampak']);
@@ -158,6 +166,12 @@ class RiskController extends Controller
         }
 
         $risk->update($validated);
+        
+        if ($request->has('performance_indicator_ids')) {
+            $risk->performanceIndicators()->sync($request->performance_indicator_ids);
+        } else {
+            $risk->performanceIndicators()->detach();
+        }
 
         $this->log($risk->id, 'Memperbarui detail identifikasi risiko');
 

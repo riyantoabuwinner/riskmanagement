@@ -93,24 +93,67 @@
 
     <div class="container-fluid">
         <div class="search-container shadow-lg">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+            <div class="row">
+                <div class="col-lg-4 mb-3 mb-lg-0">
                     <h4 class="mb-1 font-weight-bold">Riwayat Aktivitas</h4>
-                    <p class="mb-0 opacity-75">Pantau seluruh perubahan dan kegiatan sistem secara real-time.</p>
+                    <p class="mb-0 opacity-75 small">Pantau seluruh perubahan dan kegiatan sistem secara real-time.</p>
+                    
+                    @if(!$isFiltered)
+                        <div class="mt-2 badge badge-warning px-3 py-1 rounded-pill shadow-sm">
+                            <i class="fas fa-clock mr-1"></i> Menampilkan 10 Aktivitas Terakhir
+                        </div>
+                    @else
+                        <div class="mt-2 badge badge-info px-3 py-1 rounded-pill shadow-sm">
+                            <i class="fas fa-filter mr-1"></i> Mode Filter Aktif
+                        </div>
+                    @endif
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-8">
                     <form action="{{ route('audit-logs.index') }}" method="GET">
-                        <div class="input-group bg-white rounded-pill p-1 shadow-sm">
-                            <input type="text" name="search" class="form-control border-0 rounded-pill px-4" 
-                                   placeholder="Cari aktivitas, user, atau risiko..." 
-                                   value="{{ request('search') }}">
-                            <div class="input-group-append">
-                                <button class="btn btn-warning rounded-pill px-4 font-weight-bold shadow-sm" type="submit">
-                                    <i class="fas fa-search mr-1"></i> Cari
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <div class="form-group mb-0">
+                                    <label class="small font-weight-bold text-white mb-1">Dari Tanggal</label>
+                                    <input type="date" name="start_date" class="form-control form-control-sm rounded-pill border-0" value="{{ request('start_date') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="form-group mb-0">
+                                    <label class="small font-weight-bold text-white mb-1">Sampai Tanggal</label>
+                                    <input type="date" name="end_date" class="form-control form-control-sm rounded-pill border-0" value="{{ request('end_date') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-warning btn-sm btn-block rounded-pill font-weight-bold shadow-sm">
+                                    <i class="fas fa-filter mr-1"></i> Terapkan Filter
                                 </button>
-                                @if(request('search'))
-                                    <a href="{{ route('audit-logs.index') }}" class="btn btn-link text-white ml-2">Reset</a>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-8 mb-2">
+                                <div class="input-group input-group-sm bg-white rounded-pill p-1 shadow-sm">
+                                    <input type="text" name="search" class="form-control border-0 rounded-pill px-3" 
+                                           placeholder="Cari aktivitas, user, atau risiko..." 
+                                           value="{{ request('search') }}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-emerald rounded-pill px-3" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2 d-flex align-items-center justify-content-between">
+                                @if($isFiltered)
+                                    <a href="{{ route('audit-logs.index') }}" class="btn btn-link text-white btn-sm px-0 mr-2">Reset</a>
                                 @endif
+                                <div class="btn-group shadow-sm">
+                                    <a href="{{ route('audit-logs.export-excel', request()->query()) }}" class="btn btn-light btn-sm rounded-left" title="Export Excel">
+                                        <i class="fas fa-file-excel text-success"></i>
+                                    </a>
+                                    <a href="{{ route('audit-logs.export-pdf', request()->query()) }}" class="btn btn-light btn-sm rounded-right" title="Export PDF">
+                                        <i class="fas fa-file-pdf text-danger"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </form>
