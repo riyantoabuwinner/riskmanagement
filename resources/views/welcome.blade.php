@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RiskManagement — Sistem Manajemen Risiko UIN Siber Syekh Nurjati Cirebon</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <meta name="description" content="Platform manajemen risiko terintegrasi berbasis ISO 31000:2018 untuk UIN Siber Syekh Nurjati Cirebon. Kelola risiko secara proaktif dengan ERM Framework.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
