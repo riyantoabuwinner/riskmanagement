@@ -1,59 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Manajemen Risiko (Risk Management System)
+## UIN Siber Syekh Nurjati Cirebon
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Manajemen Risiko adalah aplikasi berbasis web yang dirancang untuk membantu institusi dalam mengidentifikasi, menganalisis, memitigasi, dan memantau risiko secara terstruktur dan digital. Aplikasi ini dibangun menggunakan framework Laravel dengan standar keamanan dan performa tinggi.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌟 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Dashboard Eksekutif
+Visualisasi statistik risiko secara real-time, termasuk status mitigasi, tingkat risiko residual, dan ringkasan aktivitas monitoring.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Identifikasi Risiko (Risk Register)
+Pencatatan risiko yang mencakup sasaran strategis, indikator kinerja, akar penyebab (*causa*), dan dampak risiko.
 
-## Learning Laravel
+### 3. Analisis & Evaluasi Risiko
+- **Heatmap Interaktif:** Peta risiko (5x5) untuk melihat sebaran risiko *Inherent* dan *Residual*.
+- **Scoring System:** Kalkulasi otomatis level risiko berdasarkan probabilitas dan dampak.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 4. Mitigasi Risiko
+Perencanaan langkah-langkah pengendalian risiko lengkap dengan penetapan Penanggung Jawab (PIC) dan target waktu.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. Monitoring & Realisasi
+Pemantauan progres mitigasi secara berkala, pencatatan catatan perkembangan, dan evaluasi efektivitas kontrol untuk menurunkan level risiko.
 
-## Laravel Sponsors
+### 6. Pelaporan Dinamis
+- **Export PDF:** Laporan Risk Register formal yang dilengkapi dengan grafik distribusi kategori dan dampak indikator kinerja.
+- **Export Excel:** Rekapitulasi data mentah untuk keperluan analisis lanjut.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 7. Sistem Update & Maintenance
+Modul khusus bagi administrator untuk melakukan pembaruan kode aplikasi langsung dari repositori GitHub (One-Click Deploy).
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🛠 Teknologi Utama
+- **Backend:** PHP 8.2+ dengan Laravel 12
+- **Frontend:** AdminLTE 3, TailwindCSS, Bootstrap 4
+- **Database:** MySQL / MariaDB
+- **Reporting:** Barryvdh DomPDF & Maatwebsite Excel
+- **Security:** Spatie Permission (Role Based Access Control)
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Panduan Instalasi (Development)
 
-## Code of Conduct
+1. **Clone Repositori**
+   ```bash
+   git clone https://github.com/riyantoabuwinner/riskmanagement.git
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Instal Dependensi PHP**
+   ```bash
+   composer install
+   ```
 
-## Security Vulnerabilities
+3. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env` dan sesuaikan konfigurasi database Anda.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Migrasi Database & Seeding**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-## License
+5. **Jalankan Aplikasi**
+   ```bash
+   php artisan serve
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📦 Panduan Deployment & Update (Live)
+
+Aplikasi ini dilengkapi dengan modul **Update Sistem** untuk memudahkan pemeliharaan di server produksi:
+
+1. Pastikan server memiliki akses `git` ke repositori ini.
+2. Login sebagai **Super Admin**.
+3. Masuk ke menu **Sistem > Update Sistem**.
+4. Klik **Cek Pembaharuan** untuk melihat apakah ada kode terbaru.
+5. Klik **Perbarui Sekarang** untuk melakukan `git pull` dan pembersihan cache secara otomatis.
+
+> **Catatan Penting:** Untuk perubahan struktur database (migration), developer harus menjalankannya secara manual melalui terminal server demi keamanan data.
+
+---
+
+## 📄 Lisensi
+Sistem ini dikembangkan khusus untuk lingkungan **UIN Siber Syekh Nurjati Cirebon**. Seluruh hak cipta dilindungi.
+
+---
+**Pustikom UIN Siber Syekh Nurjati Cirebon**
+Website: [https://uinssc.ac.id](https://uinssc.ac.id)
