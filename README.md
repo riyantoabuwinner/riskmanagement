@@ -1,7 +1,21 @@
 # Sistem Manajemen Risiko (Risk Management System)
 ## UIN Siber Syekh Nurjati Cirebon
 
+![Dashboard Preview](public/docs/images/dashboard.png)
+
 Sistem Manajemen Risiko adalah aplikasi berbasis web yang dirancang untuk membantu institusi dalam mengidentifikasi, menganalisis, memitigasi, dan memantau risiko secara terstruktur dan digital. Aplikasi ini dibangun menggunakan framework Laravel dengan standar keamanan dan performa tinggi.
+
+---
+
+## 📸 Preview Aplikasi
+
+| Dashboard Utama | Analisis Heatmap (5x5) |
+|:---:|:---:|
+| ![Dashboard](public/docs/images/dashboard.png) | ![Risk Map](public/docs/images/risk_map.png) |
+
+| Modul Update Sistem | Monitoring & Realisasi |
+|:---:|:---:|
+| ![System Update](public/docs/images/system_update.png) | *Detail Realisasi & Monitoring* |
 
 ---
 
