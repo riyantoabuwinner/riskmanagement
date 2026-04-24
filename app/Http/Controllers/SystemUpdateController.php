@@ -12,16 +12,15 @@ class SystemUpdateController extends Controller
     {
         $this->authorizeAdmin();
 
-        // Perform a quick fetch to ensure origin/main is up to date before checking
-        @shell_exec('git fetch origin main');
-
         $status = $this->getGitStatus();
         $log = $this->getGitLog();
         $lastOutput = session('update_output', 'Belum ada output eksekusi terbaru.');
         
-        // Check if updates are available
+        // Use ls-remote to get remote hash without needing write access to .git/FETCH_HEAD
+        $remoteHashRaw = @shell_exec('git ls-remote origin main');
+        $remoteHash = !empty($remoteHashRaw) ? explode("\t", $remoteHashRaw)[0] : null;
+        
         $localHash = trim(@shell_exec('git rev-parse HEAD'));
-        $remoteHash = trim(@shell_exec('git rev-parse origin/main'));
         $hasUpdates = !empty($remoteHash) && $localHash !== $remoteHash;
 
         // Check for local changes
@@ -35,14 +34,15 @@ class SystemUpdateController extends Controller
         $this->authorizeAdmin();
 
         try {
-            $output = [];
+            // Using ls-remote to avoid permission issues with FETCH_HEAD
+            $remoteHashRaw = [];
             $returnVar = 0;
-            exec('git fetch origin main 2>&1', $output, $returnVar);
+            exec('git ls-remote origin main 2>&1', $remoteHashRaw, $returnVar);
             
-            if ($returnVar === 0) {
-                return back()->with('success', 'Berhasil mengecek pembaruan. Halaman telah diperbarui dengan data terbaru dari GitHub.');
+            if ($returnVar === 0 && !empty($remoteHashRaw)) {
+                return back()->with('success', 'Berhasil mengecek pembaruan ke GitHub.');
             } else {
-                return back()->with('error', 'Gagal mengecek pembaruan: ' . implode("\n", $output));
+                return back()->with('error', 'Gagal terhubung ke GitHub: ' . implode("\n", $remoteHashRaw));
             }
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
@@ -55,8 +55,9 @@ class SystemUpdateController extends Controller
 
         try {
             // Re-check updates before proceeding
+            $remoteHashRaw = @shell_exec('git ls-remote origin main');
+            $remoteHash = !empty($remoteHashRaw) ? trim(explode("\t", $remoteHashRaw)[0]) : null;
             $localHash = trim(@shell_exec('git rev-parse HEAD'));
-            $remoteHash = trim(@shell_exec('git rev-parse origin/main'));
 
             if (empty($remoteHash)) {
                 return back()->with('error', 'Gagal mengambil data dari remote repository. Pastikan koneksi internet tersedia.');
@@ -68,7 +69,7 @@ class SystemUpdateController extends Controller
 
             $output = [];
             
-            // Execute Git Pull
+            // Execute Git Pull - This might still hit permission issues, but we'll try to provide better error info
             $output[] = "[" . now()->format('H:i:s') . "] --- MEMULAI GIT PULL ---";
             $pullOutput = [];
             $pullReturn = 0;
@@ -77,9 +78,10 @@ class SystemUpdateController extends Controller
 
             if ($pullReturn !== 0) {
                 $fullOutput = implode("\n", $output);
+                $errorMsg = 'Gagal melakukan pembaruan. Kemungkinan masalah izin akses (Permission Denied). Silakan jalankan "git pull" manual di terminal server.';
                 return redirect()->route('system-update.index')
                     ->with('update_output', $fullOutput)
-                    ->with('error', 'Gagal melakukan pembaruan (Git Pull Error). Cek konsol output untuk detail.');
+                    ->with('error', $errorMsg);
             }
 
             // Clear Cache & Optimize
@@ -87,10 +89,6 @@ class SystemUpdateController extends Controller
             try {
                 Artisan::call('optimize:clear');
                 $output[] = Artisan::output();
-                
-                // Optional: Run migrations if needed
-                // Artisan::call('migrate', ['--force' => true]);
-                // $output[] = Artisan::output();
             } catch (\Exception $ae) {
                 $output[] = "Error Artisan: " . $ae->getMessage();
             }
