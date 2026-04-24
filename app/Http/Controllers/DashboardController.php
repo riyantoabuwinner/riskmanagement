@@ -45,38 +45,87 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        // Heatmap Data (Matrix 5x5)
-        $heatmapData = (clone $riskQuery)->select('probabilitas', 'level_dampak', DB::raw('count(*) as count'))
-            ->groupBy('probabilitas', 'level_dampak')
-            ->get();
+        $allRisks = (clone $riskQuery)->get();
+        $heatmapInherent = [];
+        $heatmapResidual = [];
+        $risksInCellInherent = [];
+        $risksInCellResidual = [];
 
-        $heatmap = [];
+        // Initialize matrices
         for ($p = 5; $p >= 1; $p--) {
             for ($d = 1; $d <= 5; $d++) {
-                $count = $heatmapData->where('probabilitas', $p)->where('level_dampak', $d)->first()->count ?? 0;
-                $heatmap[$p][$d] = $count;
+                $heatmapInherent[$p][$d] = 0;
+                $heatmapResidual[$p][$d] = 0;
+                $risksInCellInherent[$p][$d] = [];
+                $risksInCellResidual[$p][$d] = [];
             }
         }
 
-        // Chart Data Format
-        $chartCategory = [
-            'labels' => $risksByCategory->map(fn($r) => $r->kategori->nama_kategori ?? 'Unknown'),
-            'data' => $risksByCategory->pluck('total')
-        ];
+        foreach ($allRisks as $risk) {
+            // Inherent
+            if ($risk->probabilitas && $risk->level_dampak) {
+                $heatmapInherent[$risk->probabilitas][$risk->level_dampak]++;
+                $risksInCellInherent[$risk->probabilitas][$risk->level_dampak][] = $risk->nama_risiko;
+            }
 
-        $chartUnit = [
-            'labels' => $risksByUnit->map(fn($r) => $r->unit->nama_unit ?? 'Unknown'),
-            'data' => $risksByUnit->pluck('total')
-        ];
+            // Residual
+            $latestMonitoring = $risk->monitorings->sortByDesc('tanggal_update')->first();
+            if ($latestMonitoring && $latestMonitoring->residual_probabilitas && $latestMonitoring->residual_impact) {
+                $heatmapResidual[$latestMonitoring->residual_probabilitas][$latestMonitoring->residual_impact]++;
+                $risksInCellResidual[$latestMonitoring->residual_probabilitas][$latestMonitoring->residual_impact][] = $risk->nama_risiko;
+            } else {
+                if ($risk->probabilitas && $risk->level_dampak) {
+                    $heatmapResidual[$risk->probabilitas][$risk->level_dampak]++;
+                    $risksInCellResidual[$risk->probabilitas][$risk->level_dampak][] = $risk->nama_risiko;
+                }
+            }
+        }
+
+        // Advanced Stats for Detailed Dashboard
+        $mitigationQuery = \App\Models\RiskMonitoring::query();
+        if (!$isAdmin) {
+            $mitigationQuery->whereHas('risk', fn($q) => $q->where('unit_id', $unitId));
+        }
+        $avgProgress = $mitigationQuery->avg('progress') ?? 0;
+        
+        $kriCount = \App\Models\PerformanceIndicator::count();
+        
+        $openIncidents = (clone $riskQuery)->where('status', 'Approved')->count();
+
+        // Monthly Mitigation Performance (Last 6 Months)
+        $mitigationPerformance = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $count = (clone $mitigationQuery)->whereYear('tanggal_update', $date->year)
+                ->whereMonth('tanggal_update', $date->month)
+                ->count();
+            $mitigationPerformance['labels'][] = $date->format('M');
+            $mitigationPerformance['data'][] = $count;
+        }
+
+        // Critical Mitigation Tasks
+        $criticalTasks = \App\Models\Mitigation::with('risk')
+            ->whereHas('risk', function($q) use ($isAdmin, $unitId) {
+                if (!$isAdmin) $q->where('unit_id', $unitId);
+            })
+            ->latest()
+            ->take(5)
+            ->get();
 
         return view('dashboard', compact(
             'totalRisks',
-            'chartCategory',
-            'chartUnit',
             'topRisks',
-            'heatmap',
+            'heatmapInherent',
+            'heatmapResidual',
+            'risksInCellInherent',
+            'risksInCellResidual',
             'isAdmin',
-            'unitName'
+            'unitName',
+            'avgProgress',
+            'openIncidents',
+            'kriCount',
+            'mitigationPerformance',
+            'criticalTasks'
         ));
     }
 }
