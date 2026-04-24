@@ -20,7 +20,11 @@
             color: #fff; font-weight: 700; font-size: 0.9rem;
             box-shadow: 0 4px 10px rgba(16,185,129,0.2);
         }
-        .user-name { font-weight: 700; color: #1e293b; font-size: 0.9rem; margin-bottom: 2px; }
+        .user-name { 
+            font-weight: 700; color: #1e293b; font-size: 0.9rem; margin-bottom: 2px;
+            max-width: 180px; overflow: hidden; 
+            text-overflow: ellipsis; white-space: nowrap;
+        }
         .user-email { 
             font-size: 0.75rem; color: #64748b; 
             max-width: 180px; overflow: hidden; 
@@ -109,7 +113,7 @@
                                             {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <div class="user-name">{{ $user->name }}</div>
+                                            <div class="user-name" title="{{ $user->name }}">{{ $user->name }}</div>
                                             <div class="text-muted" style="font-size:0.75rem;">ID: #{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</div>
                                         </div>
                                     </div>
