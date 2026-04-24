@@ -38,9 +38,12 @@
                                         </form>
                                     @endif
                                 @else
-                                    <button class="btn btn-secondary shadow-sm px-4" disabled title="Sistem sudah dalam versi terbaru">
-                                        <i class="fas fa-check-circle mr-1"></i> Up to Date
-                                    </button>
+                                    <form action="{{ route('system-update.check') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-secondary shadow-sm px-4" title="Klik untuk cek ulang pembaharuan">
+                                            <i class="fas fa-check-circle mr-1"></i> Up to Date
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                     </div>
