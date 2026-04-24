@@ -30,17 +30,17 @@
                                             <i class="fas fa-exclamation-triangle mr-1"></i> Perlu Clean Up
                                         </button>
                                     @else
-                                        <form action="{{ route('system-update.update') }}" method="POST" onsubmit="return confirm('Sistem akan melakukan pembaharuan. Pastikan koneksi internet stabil. Lanjutkan?')">
+                                        <form action="{{ route('system-update.update') }}" method="POST" id="updateForm" onsubmit="return startUpdate()">
                                             @csrf
-                                            <button type="submit" class="btn btn-success shadow-sm px-4">
-                                                <i class="fas fa-cloud-download-alt mr-1"></i> Perbarui Sekarang
+                                            <button type="submit" class="btn btn-success shadow-sm px-4 btn-lg font-weight-bold" id="btnUpdateNow">
+                                                <i class="fas fa-rocket mr-1"></i> Perbarui Sekarang
                                             </button>
                                         </form>
                                     @endif
                                 @else
-                                    <form action="{{ route('system-update.check') }}" method="POST">
+                                    <form action="{{ route('system-update.check') }}" method="POST" id="checkForm" onsubmit="return startCheck()">
                                         @csrf
-                                        <button type="submit" class="btn btn-secondary shadow-sm px-4" title="Klik untuk cek ulang pembaharuan">
+                                        <button type="submit" class="btn btn-secondary shadow-sm px-4" id="btnUpToDate" title="Klik untuk cek ulang pembaharuan">
                                             <i class="fas fa-check-circle mr-1"></i> Up to Date
                                         </button>
                                     </form>
@@ -49,6 +49,24 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                function startUpdate() {
+                    if(confirm('Sistem akan menarik kode terbaru dari GitHub dan memperbarui server live. Lanjutkan?')) {
+                        const btn = document.getElementById('btnUpdateNow');
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses Update...';
+                        return true;
+                    }
+                    return false;
+                }
+                function startCheck() {
+                    const btn = document.getElementById('btnUpToDate');
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-sync fa-spin mr-1"></i> Mengecek...';
+                    return true;
+                }
+            </script>
 
             <div class="row">
                 <!-- Left Column: Status & Log -->
