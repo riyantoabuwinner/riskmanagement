@@ -17,10 +17,10 @@
                             <p class="text-light opacity-75 mb-0">Kelola pembaruan kode aplikasi langsung dari repositori GitHub.</p>
                         </div>
                             <div class="d-flex">
-                                <form action="{{ route('system-update.check') }}" method="POST" class="mr-2">
+                                <form action="{{ route('system-update.check') }}" method="POST" class="mr-2" id="checkForm" onsubmit="return startCheck()">
                                     @csrf
-                                    <button type="submit" class="btn btn-light shadow-sm px-4">
-                                        <i class="fas fa-search mr-1"></i> Cek Pembaharuan
+                                    <button type="submit" class="btn btn-light shadow-sm px-4" id="btnCheck">
+                                        <i class="fas fa-search mr-1"></i> Cek Versi Baru
                                     </button>
                                 </form>
                                 
@@ -33,17 +33,14 @@
                                         <form action="{{ route('system-update.update') }}" method="POST" id="updateForm" onsubmit="return startUpdate()">
                                             @csrf
                                             <button type="submit" class="btn btn-success shadow-sm px-4 btn-lg font-weight-bold" id="btnUpdateNow">
-                                                <i class="fas fa-rocket mr-1"></i> Perbarui Sekarang
+                                                <i class="fas fa-cloud-upload-alt mr-1"></i> Update ke Server Live
                                             </button>
                                         </form>
                                     @endif
                                 @else
-                                    <form action="{{ route('system-update.check') }}" method="POST" id="checkForm" onsubmit="return startCheck()">
-                                        @csrf
-                                        <button type="submit" class="btn btn-secondary shadow-sm px-4" id="btnUpToDate" title="Klik untuk cek ulang pembaharuan">
-                                            <i class="fas fa-check-circle mr-1"></i> Up to Date
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-secondary shadow-sm px-4" disabled title="Sistem sudah dalam versi terbaru">
+                                        <i class="fas fa-check-circle mr-1"></i> Sistem Terupdate
+                                    </button>
                                 @endif
                             </div>
                     </div>
@@ -52,16 +49,16 @@
 
             <script>
                 function startUpdate() {
-                    if(confirm('Sistem akan menarik kode terbaru dari GitHub dan memperbarui server live. Lanjutkan?')) {
+                    if(confirm('Apakah Anda yakin ingin melakukan update ke server live sekarang?')) {
                         const btn = document.getElementById('btnUpdateNow');
                         btn.disabled = true;
-                        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses Update...';
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Sedang Mengupdate...';
                         return true;
                     }
                     return false;
                 }
                 function startCheck() {
-                    const btn = document.getElementById('btnUpToDate');
+                    const btn = document.getElementById('btnCheck');
                     btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-sync fa-spin mr-1"></i> Mengecek...';
                     return true;
