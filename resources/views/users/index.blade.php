@@ -21,7 +21,11 @@
             box-shadow: 0 4px 10px rgba(16,185,129,0.2);
         }
         .user-name { font-weight: 700; color: #1e293b; font-size: 0.9rem; margin-bottom: 2px; }
-        .user-email { font-size: 0.75rem; color: #64748b; }
+        .user-email { 
+            font-size: 0.75rem; color: #64748b; 
+            max-width: 180px; overflow: hidden; 
+            text-overflow: ellipsis; white-space: nowrap; 
+        }
         .btn-action { 
             width: 32px; height: 32px; border-radius: 8px; display: inline-flex; 
             align-items: center; justify-content: center; transition: all 0.2s;
@@ -110,8 +114,8 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="user-email"><i class="far fa-envelope mr-1"></i> {{ $user->email }}</div>
+                                <td style="width: 200px;">
+                                    <div class="user-email" title="{{ $user->email }}"><i class="far fa-envelope mr-1"></i> {{ $user->email }}</div>
                                 </td>
                                 <td>
                                     @forelse($user->roles as $role)
