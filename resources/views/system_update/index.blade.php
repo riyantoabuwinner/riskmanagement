@@ -16,27 +16,33 @@
                             </h3>
                             <p class="text-light opacity-75 mb-0">Kelola pembaruan kode aplikasi langsung dari repositori GitHub.</p>
                         </div>
-                        <div class="d-flex">
-                            <form action="{{ route('system-update.check') }}" method="POST" class="mr-2">
-                                @csrf
-                                <button type="submit" class="btn btn-light shadow-sm px-4">
-                                    <i class="fas fa-search mr-1"></i> Cek Pembaharuan
-                                </button>
-                            </form>
-                            
-                            @if($hasUpdates)
-                                <form action="{{ route('system-update.update') }}" method="POST" onsubmit="return confirm('Sistem akan melakukan pembaharuan. Pastikan koneksi internet stabil. Lanjutkan?')">
+                            <div class="d-flex">
+                                <form action="{{ route('system-update.check') }}" method="POST" class="mr-2">
                                     @csrf
-                                    <button type="submit" class="btn btn-success shadow-sm px-4">
-                                        <i class="fas fa-cloud-download-alt mr-1"></i> Perbarui Sekarang
+                                    <button type="submit" class="btn btn-light shadow-sm px-4">
+                                        <i class="fas fa-search mr-1"></i> Cek Pembaharuan
                                     </button>
                                 </form>
-                            @else
-                                <button class="btn btn-secondary shadow-sm px-4" disabled title="Sistem sudah dalam versi terbaru">
-                                    <i class="fas fa-check-circle mr-1"></i> Up to Date
-                                </button>
-                            @endif
-                        </div>
+                                
+                                @if($hasUpdates)
+                                    @if($isDirty)
+                                        <button class="btn btn-warning shadow-sm px-4" disabled title="Commit atau Stash perubahan lokal terlebih dahulu">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i> Perlu Clean Up
+                                        </button>
+                                    @else
+                                        <form action="{{ route('system-update.update') }}" method="POST" onsubmit="return confirm('Sistem akan melakukan pembaharuan. Pastikan koneksi internet stabil. Lanjutkan?')">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success shadow-sm px-4">
+                                                <i class="fas fa-cloud-download-alt mr-1"></i> Perbarui Sekarang
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <button class="btn btn-secondary shadow-sm px-4" disabled title="Sistem sudah dalam versi terbaru">
+                                        <i class="fas fa-check-circle mr-1"></i> Up to Date
+                                    </button>
+                                @endif
+                            </div>
                     </div>
                 </div>
             </div>
@@ -54,7 +60,11 @@
                         <div class="card-body pt-0">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    @if($hasUpdates)
+                                    @if($isDirty)
+                                        <div class="bg-danger-light p-3 rounded-circle text-danger">
+                                            <i class="fas fa-tools fa-2x"></i>
+                                        </div>
+                                    @elseif($hasUpdates)
                                         <div class="bg-warning-light p-3 rounded-circle text-warning">
                                             <i class="fas fa-exclamation-circle fa-2x"></i>
                                         </div>
@@ -79,10 +89,17 @@
                                             <span class="text-dark font-weight-bold">{{ $status['date'] }}</span>
                                         </div>
                                     </div>
-                                    @if($hasUpdates)
+                                    @if($isDirty)
+                                        <div class="mt-3 p-2 bg-danger-pale rounded border border-danger-light">
+                                            <p class="text-danger mb-0 font-weight-bold" style="font-size: 0.85rem;">
+                                                <i class="fas fa-exclamation-triangle mr-1"></i> Terdeteksi perubahan lokal yang belum di-commit.
+                                                <small class="d-block font-weight-normal mt-1">Sistem tidak dapat melakukan update otomatis jika ada file yang dimodifikasi secara manual. Silakan commit atau buang perubahan tersebut melalui terminal.</small>
+                                            </p>
+                                        </div>
+                                    @elseif($hasUpdates)
                                         <div class="mt-3 p-2 bg-warning-pale rounded border border-warning-light">
                                             <p class="text-warning mb-0 font-weight-bold" style="font-size: 0.85rem;">
-                                                <i class="fas fa-info-circle mr-1"></i> Tersedia pembaharuan di repositori GitHub. Silakan klik tombol "Perbarui Sekarang".
+                                                <i class="fas fa-info-circle mr-1"></i> Tersedia pembaharuan di repositori GitHub (Remote: {{ substr($remoteHash, 0, 7) }}). Silakan klik tombol "Perbarui Sekarang".
                                             </p>
                                         </div>
                                     @else
@@ -147,10 +164,13 @@
         .font-mono { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; }
         .bg-warning-light { background: rgba(245, 158, 11, 0.1); }
         .bg-success-light { background: rgba(16, 185, 129, 0.1); }
+        .bg-danger-light { background: rgba(239, 68, 68, 0.1); }
         .bg-warning-pale { background: #fffbeb; }
         .bg-success-pale { background: #f0fdf4; }
+        .bg-danger-pale { background: #fef2f2; }
         .border-warning-light { border-color: #fde68a !important; }
         .border-success-light { border-color: #bbf7d0 !important; }
+        .border-danger-light { border-color: #fecaca !important; }
         .shadow-inner { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2); }
         .opacity-75 { opacity: 0.75; }
         .text-xs { font-size: 0.75rem; }
