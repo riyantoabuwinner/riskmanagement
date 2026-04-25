@@ -16,9 +16,20 @@ class SystemUpdateController extends Controller
         $log = $this->getGitLog();
         $lastOutput = session('update_output', 'Belum ada output eksekusi terbaru.');
         
+        // Get remote URL and type
+        $remoteUrl = trim(@shell_exec('git remote get-url origin'));
+        $isSsh = str_contains($remoteUrl, 'git@github.com');
+        
         // Use ls-remote to get remote hash without needing write access to .git/FETCH_HEAD
-        $remoteHashRaw = @shell_exec('git ls-remote origin main');
-        $remoteHash = !empty($remoteHashRaw) ? explode("\t", $remoteHashRaw)[0] : null;
+        $remoteHashRaw = @shell_exec('git ls-remote origin main 2>&1');
+        $remoteHash = null;
+        $checkError = null;
+
+        if (!empty($remoteHashRaw) && !str_contains($remoteHashRaw, 'fatal:')) {
+            $remoteHash = explode("\t", $remoteHashRaw)[0];
+        } else {
+            $checkError = $remoteHashRaw;
+        }
         
         $localHash = trim(@shell_exec('git rev-parse HEAD'));
         $hasUpdates = !empty($remoteHash) && $localHash !== $remoteHash;
@@ -26,7 +37,10 @@ class SystemUpdateController extends Controller
         // Check for local changes
         $isDirty = !empty(trim(@shell_exec('git status --short')));
 
-        return view('system_update.index', compact('status', 'log', 'lastOutput', 'hasUpdates', 'isDirty', 'localHash', 'remoteHash'));
+        return view('system_update.index', compact(
+            'status', 'log', 'lastOutput', 'hasUpdates', 'isDirty', 
+            'localHash', 'remoteHash', 'remoteUrl', 'isSsh', 'checkError'
+        ));
     }
 
     public function check()
@@ -34,15 +48,30 @@ class SystemUpdateController extends Controller
         $this->authorizeAdmin();
 
         try {
-            // Using ls-remote to avoid permission issues with FETCH_HEAD
             $remoteHashRaw = [];
             $returnVar = 0;
             exec('git ls-remote origin main 2>&1', $remoteHashRaw, $returnVar);
             
+            $outputStr = implode("\n", $remoteHashRaw);
+
             if ($returnVar === 0 && !empty($remoteHashRaw)) {
                 return back()->with('success', 'Berhasil mengecek pembaruan ke GitHub.');
             } else {
-                return back()->with('error', 'Gagal terhubung ke GitHub: ' . implode("\n", $remoteHashRaw));
+                $errorMsg = 'Gagal terhubung ke GitHub.';
+                
+                if (str_contains($outputStr, 'Permission denied') || str_contains($outputStr, 'publickey')) {
+                    $remoteUrl = trim(@shell_exec('git remote get-url origin'));
+                    $errorMsg .= ' Masalah izin akses SSH (Permission Denied).';
+                    
+                    if (str_contains($remoteUrl, 'git@github.com:')) {
+                        $repoPath = explode(':', $remoteUrl)[1] ?? '';
+                        $repoPath = str_replace('.git', '', $repoPath);
+                        $httpsUrl = "https://github.com/{$repoPath}.git";
+                        $errorMsg .= " Disarankan mengubah remote ke HTTPS agar web server dapat mengaksesnya. Jalankan perintah ini di terminal server: <br><code>git remote set-url origin $httpsUrl</code>";
+                    }
+                }
+                
+                return back()->with('error', $errorMsg)->with('update_output', $outputStr);
             }
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());

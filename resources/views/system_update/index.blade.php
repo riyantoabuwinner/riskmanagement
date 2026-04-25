@@ -103,10 +103,31 @@
                                             <code class="text-dark font-weight-bold">{{ $status['hash'] }}</code>
                                         </div>
                                         <div class="col-md-4">
-                                            <small class="text-muted d-block">Pembaruan Terakhir</small>
-                                            <span class="text-dark font-weight-bold">{{ $status['date'] }}</span>
+                                            <small class="text-muted d-block">Remote URL</small>
+                                            <code class="text-xs {{ $isSsh ? 'text-warning' : 'text-success' }}" title="{{ $remoteUrl }}">{{ Str::limit($remoteUrl, 25) }}</code>
+                                            @if($isSsh)
+                                                <i class="fas fa-exclamation-triangle text-warning ml-1" title="Menggunakan SSH. Pastikan key tersedia untuk user web server."></i>
+                                            @endif
                                         </div>
                                     </div>
+                                    
+                                    @if(isset($checkError) && $checkError)
+                                        <div class="mt-3 p-2 bg-danger-pale rounded border border-danger-light">
+                                            <p class="text-danger mb-0 font-weight-bold" style="font-size: 0.85rem;">
+                                                <i class="fas fa-plug-circle-xmark mr-1"></i> Gagal Koneksi ke GitHub
+                                                <small class="d-block font-weight-normal mt-1">
+                                                    {{ $checkError }}
+                                                </small>
+                                            </p>
+                                            @if($isSsh)
+                                                <div class="mt-2 text-xs text-muted">
+                                                    <strong>Tips:</strong> Masalah <code>Permission Denied (publickey)</code> biasanya karena web server tidak punya akses ke SSH key. 
+                                                    Disarankan beralih ke HTTPS: <code>git remote set-url origin {{ str_replace(['git@github.com:', '.git'], ['https://github.com/', '.git'], $remoteUrl) }}</code>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+
                                     @if($isDirty)
                                         <div class="mt-3 p-2 bg-danger-pale rounded border border-danger-light">
                                             <p class="text-danger mb-0 font-weight-bold" style="font-size: 0.85rem;">
