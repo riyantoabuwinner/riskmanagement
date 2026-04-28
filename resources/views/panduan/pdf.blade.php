@@ -255,8 +255,12 @@
         <li>Sebagai Super Admin / Admin utama, Anda juga akan langsung diberi tahu setiap kali ada pengguna baru yang melakukan pengajuan hak akses (Role Request) agar dapat dieksekusi dengan cepat.</li>
     </ul>
 
-    <h2>9. Kendala Teknis Ditemukan?</h2>
-    <p>Aplikasi telah berupaya dirancang semudah mungkin. Namun jika menghadapi *error* fungsi sistem, jangan ragu melapor ke Administrator Sistem Utama melalui layanan Tiket IT yang dikelola universitas atau kontak bagian Pusat Data Universitas ISO.</p>
+    <h2>9. 📞 DUKUNGAN TEKNIS</h2>
+    <p>Jika Anda menemukan bugs, kendala login, atau kesalahan database, jangan panik dan jangan gaduh ataupun mencari-cari kesalahan tim pengembang. Segera screenshot dan kirimkan laporan ke:</p>
+    <p style="text-align: center; font-weight: bold; color: #047857;">
+        pustikom@uinssc.ac.id
+    </p>
+    <p style="text-align: center; font-style: italic; color: #777;">#SilentHustle</p>
 
     <div style="margin-top: 50px; text-align: center; color: #777;">
         <p><em>— Selesai —</em><br>Terima kasih telah menggunakan sistem ini.</p>

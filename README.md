@@ -106,3 +106,9 @@ Sistem ini dikembangkan khusus untuk lingkungan **UIN Siber Syekh Nurjati Cirebo
 ---
 **Pustikom UIN Siber Syekh Nurjati Cirebon**
 Website: [https://uinssc.ac.id](https://uinssc.ac.id)
+
+### 📞 DUKUNGAN TEKNIS
+Jika Anda menemukan bugs, kendala login, atau kesalahan database, jangan panik dan jangan gaduh ataupun mencari-cari kesalahan tim pengembang. Segera screenshot dan kirimkan laporan ke:
+
+📧 **pustikom@uinssc.ac.id**
+#SilentHustle

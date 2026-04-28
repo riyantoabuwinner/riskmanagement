@@ -55,6 +55,23 @@
                 </a>
             </div>
         </div>
+
+        <div class="card mt-3 shadow-sm border-left border-info">
+            <div class="card-body p-3">
+                <h6 class="font-weight-bold mb-2"><i class="fas fa-headset mr-2 text-info"></i>📞 DUKUNGAN TEKNIS</h6>
+                <p class="small text-muted mb-2">
+                    Jika Anda menemukan bugs, kendala login, atau kesalahan database, jangan panik dan jangan gaduh ataupun mencari-cari kesalahan tim pengembang. Segera screenshot dan kirimkan laporan ke:
+                </p>
+                <div class="bg-light p-2 rounded mb-2 text-center">
+                    <a href="mailto:pustikom@uinssc.ac.id" class="font-weight-bold text-info small">
+                        pustikom@uinssc.ac.id
+                    </a>
+                </div>
+                <div class="text-right">
+                    <span class="badge badge-light text-muted font-italic">#SilentHustle</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-9">
